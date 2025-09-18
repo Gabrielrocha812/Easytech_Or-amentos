@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Orçamento - {{ cliente }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0; /* Remove a margem da página para controlo total */
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 11pt;
+            color: #333;
+            margin: 1.5cm;
+        }
+
+        /* --- Cabeçalho --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f2f2f2;
+        }
+        .logo {
+            width: 250px;
+            height: auto;
+        }
+        .invoice-details {
+            text-align: right;
+        }
+        .invoice-details h1 {
+            font-size: 24pt;
+            margin: 0;
+            color: #000;
+        }
+        .invoice-details p {
+            margin: 2px 0;
+            font-size: 10pt;
+            color: #777;
+        }
+
+        /* --- Informações do Cliente --- */
+        .customer-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        .customer-info div {
+            width: 48%;
+        }
+        .customer-info h2 {
+            font-size: 11pt;
+            color: #555;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        .customer-info p {
+            line-height: 1.6;
+            font-size: 10pt;
+        }
+
+        /* --- Tabela de Itens --- */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+        .items-table th, .items-table td {
+            padding: 12px;
+            text-align: left;
+        }
+        .items-table thead th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+            font-size: 9pt;
+            text-transform: uppercase;
+            color: #555;
+            border-bottom: 2px solid #ddd;
+        }
+        .items-table tbody tr {
+            border-bottom: 1px solid #f2f2f2;
+        }
+        .items-table .text-right {
+            text-align: right;
+        }
+
+        /* --- Secção de Totais --- */
+        .totals {
+            float: right;
+            width: 300px;
+            margin-top: 30px;
+        }
+        .totals table {
+            width: 100%;
+        }
+        .totals td {
+            padding: 8px 0;
+        }
+        .totals .label {
+            color: #555;
+        }
+        .totals .value {
+            text-align: right;
+        }
+        .totals .grand-total {
+            font-weight: bold;
+            font-size: 1.3em;
+            border-top: 2px solid #333;
+            padding-top: 10px;
+        }
+
+        /* --- Rodapé --- */
+        .footer {
+            position: fixed;
+            bottom: -1cm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9pt;
+            color: #aaa;
+            padding: 1.5cm;
+            padding-top: 10px;
+            border-top: 1px solid #f2f2f2;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="{{ logo_path }}" class="logo">
+        <div class="invoice-details">
+            <h1>ORÇAMENTO</h1>
+            <p><b>Emissão:</b> {{ emissao }}</p>
+            <p><b>Validade:</b> {{ validade }}</p>
+        </div>
+    </div>
+
+    <div class="customer-info">
+        <div>
+            <h2>DE:</h2>
+            <p>
+                <b>EASYTECH Tecnologia</b><br>
+                César e Gabriel: (31) 98849-9703<br>
+                easytechnovalima@gmail.com
+            </p>
+        </div>
+        <div>
+            <h2>PARA:</h2>
+            <p>
+                <b>{{ cliente }}</b><br>
+                {{ contato_cliente }}
+            </p>
+        </div>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>PRODUTO/SERVIÇO</th>
+                <th class="text-right">QUANT.</th>
+                <th class="text-right">VALOR UNIT.</th>
+                <th class="text-right">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens %}
+            <tr>
+                <td>{{ item.produto }}</td>
+                <td class="text-right">{{ item.quantidade }}</td>
+                <td class="text-right">R$ {{ "%.2f"|format(item.valor_unitario)|replace('.', ',') }}</td>
+                <td class="text-right">R$ {{ "%.2f"|format(item.total_item)|replace('.', ',') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <table>
+            <tr>
+                <td class="label">Sub-Total</td>
+                <td class="value">R$ {{ "%.2f"|format(subtotal)|replace('.', ',') }}</td>
+            </tr>
+            <tr>
+                <td class="label">Desconto</td>
+                <td class="value">R$ {{ "%.2f"|format(desconto)|replace('.', ',') }}</td>
+            </tr>
+            <tr>
+                <td class="label grand-total">Total</td>
+                <td class="value grand-total">R$ {{ "%.2f"|format(total_final)|replace('.', ',') }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        Obrigado pela sua preferência!
+    </div>
+
+</body>
+</html>

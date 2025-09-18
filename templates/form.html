@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Orçamento Responsivo</title>
+    <style>
+        /* Estilo base e reset */
+        :root {
+            --primary-color: #0056b3;
+            --primary-hover: #004494;
+            --secondary-color: #6c757d;
+            --secondary-hover: #5a6268;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --light-gray: #f8f9fa;
+            --border-color: #ccc;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 2em;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: block;
+        }
+
+        input, select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 25px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary { background-color: var(--secondary-color); }
+        .btn-secondary:hover { background-color: var(--secondary-hover); }
+        .btn-danger { background-color: var(--danger-color); }
+        .btn-danger:hover { background-color: var(--danger-hover); }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        #itens-container .item-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end; /* Alinha itens na base */
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        #itens-container .item-row:first-child {
+             border-top: none;
+             padding-top: 0;
+        }
+
+        .item-row .form-group { flex: 1; }
+        .item-row .form-group.produto-servico { flex: 3; } /* Dá mais espaço para a descrição */
+        
+        .item-row .btn-danger {
+            padding: 10px 15px; /* Aumenta a área de toque */
+            margin-bottom: 0; /* Alinha com os inputs */
+            height: 40px; /* Mesma altura dos inputs */
+        }
+
+
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 25px 0;
+        }
+
+        /* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
+        @media (max-width: 768px) {
+            body {
+                margin: 1em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            /* Empilha os campos em colunas */
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            /* Permite que os itens do orçamento quebrem a linha */
+            .item-row {
+                flex-wrap: wrap;
+            }
+            
+            /* O campo de descrição ocupa a linha inteira */
+            .item-row .form-group.produto-servico {
+                flex-basis: 100%;
+            }
+
+            /* O botão de remover também ocupa a linha inteira para fácil toque */
+            .item-row .btn-danger {
+                width: 100%;
+                margin-top: 10px;
+            }
+            
+            .btn-secondary {
+                 width: 100%; /* Botão de adicionar ocupa a largura toda */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerar Orçamento</h1>
+        <form action="/gerar-pdf" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cliente">Nome do Cliente:</label>
+                    <input type="text" id="cliente" name="cliente" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="contato_cliente">Contato do Cliente:</label>
+                    <input type="text" id="contato_cliente" name="contato_cliente" value="31 " required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="emissao">Data de Emissão:</label>
+                    <input type="text" id="emissao" name="emissao" required>
+                </div>
+                <div class="form-group">
+                    <label for="validade">Data de Validade:</label>
+                    <input type="text" id="validade" name="validade" required>
+                </div>
+            </div>
+            <hr>
+            <h2>Itens do Orçamento</h2>
+            <div id="itens-container">
+                <div class="item-row">
+                    <div class="form-group produto-servico">
+                        <label>Produto/Serviço:</label>
+                        <input type="text" name="produto" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quant.:</label>
+                        <input type="number" name="quantidade" value="1" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Val. Unit. (R$):</label>
+                        <input type="number" step="0.01" name="valor_unitario" value="" required min="0">
+                    </div>
+                    <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>
+                </div>
+            </div>
+            <button type="button" class="btn-secondary" onclick="adicionarItem()" style="margin-top: 20px; max-width: 200px;">Adicionar Item</button>
+            <hr>
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;"></div> <div class="form-group">
+                    <label for="desconto">Desconto Total (R$):</label>
+                    <input type="number" step="0.01" id="desconto" name="desconto" value="0.00" required>
+                </div>
+            </div>
+            <button type="submit">Gerar PDF</button>
+        </form>
+    </div>
+
+    <script>
+        // Função para formatar a data como dd/mm/yyyy
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Os meses começam do 0
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Executa quando a página termina de carregar
+        window.onload = function() {
+            const emissaoInput = document.getElementById('emissao');
+            const validadeInput = document.getElementById('validade');
+
+            // Define a data de emissão como a data de hoje
+            const hoje = new Date();
+            emissaoInput.value = formatDate(hoje);
+
+            // Calcula a data de validade (1 mês à frente)
+            const dataValidade = new Date(hoje);
+            dataValidade.setMonth(hoje.getMonth() + 1);
+            validadeInput.value = formatDate(dataValidade);
+        };
+        
+        function adicionarItem() {
+            const container = document.getElementById('itens-container');
+            const novoItem = document.createElement('div');
+            novoItem.className = 'item-row';
+            novoItem.innerHTML = `
+                <div class="form-group produto-servico">
+                    <label>Produto/Serviço:</label>
+                    <input type="text" name="produto" placeholder="Descrição do produto/serviço" required>
+                </div>
+                <div class="form-group">
+                    <label>Quant.:</label>
+                    <input type="number" name="quantidade" value="1" required min="1">
+                </div>
+                <div class="form-group">
+                    <label>Val. Unit. (R$):</label>
+                    <input type="number" step="0.01" name="valor_unitario" value="0.00" required min="0">
+                </div>
+                <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>`;
+            container.appendChild(novoItem);
+        }
+
+        function removerItem(botao) {
+            if (document.querySelectorAll('.item-row').length > 1) {
+                botao.parentElement.remove();
+            } else {
+                alert('É necessário ter pelo menos um item no orçamento.');
+            }
+        }
+    </script>
+</body>
+</html>
