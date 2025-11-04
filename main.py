@@ -125,7 +125,7 @@ async def gerar_nota_recebimento(
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
     # Renderizar HTML com variáveis
-    html_content = env.get_template("nota_recebimento_cliente.html").render({
+    html_content = env.get_template("nota_recebimento.html").render({
         "logo_path": f"file:///{logo_path}",
         "cliente": cliente.strip(),
         "contato_cliente": contato_cliente.strip(),
