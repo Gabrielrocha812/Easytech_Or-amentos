@@ -121,32 +121,39 @@ async def gerar_nota_recebimento(
     condicao: str = Form(""),
     observacoes: str = Form("")
 ):
+    # Caminho do logotipo
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
+    # Renderizar HTML com variáveis
     html_content = env.get_template("nota_recebimento_cliente.html").render({
         "logo_path": f"file:///{logo_path}",
-        "cliente": cliente,
-        "contato_cliente": contato_cliente,
-        "cpf_cnpj": cpf_cnpj,
-        "telefone": telefone,
+        "cliente": cliente.strip(),
+        "contato_cliente": contato_cliente.strip(),
+        "cpf_cnpj": cpf_cnpj.strip(),
+        "telefone": telefone.strip(),
         "data_recebimento": data_recebimento,
-        "responsavel": responsavel,
-        "numero_registro": numero_registro,
-        "tipo_equipamento": tipo_equipamento,
-        "marca_modelo": marca_modelo,
-        "numero_serie": numero_serie,
-        "acessorios": acessorios,
-        "condicao": condicao,
-        "observacoes": observacoes
+        "responsavel": responsavel.strip(),
+        "numero_registro": numero_registro.strip(),
+        "tipo_equipamento": tipo_equipamento.strip(),
+        "marca_modelo": marca_modelo.strip(),
+        "numero_serie": numero_serie.strip(),
+        "acessorios": acessorios.strip(),
+        "condicao": condicao.strip(),
+        "observacoes": observacoes.strip()
     })
 
+    # Gerar PDF
     pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
-    nome_arquivo = f"Nota_Recebimento_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
 
-    return Response(pdf_bytes, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename=\"{nome_arquivo}\"'})
+    # Nome limpo e seguro
+    nome_arquivo = f"Nota_Recebimento_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
 
-
+    # Retornar como download
+    return Response(
+        pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'}
+    )
 # ==========================================================
 #   GERAÇÃO DE PDF — ORDEM DE SERVIÇO
 # ==========================================================
