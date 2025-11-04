@@ -107,32 +107,44 @@ async def gerar_pdf(
 
 @app.post("/gerar-nota-recebimento")
 async def gerar_nota_recebimento(
-    fornecedor: str = Form(...),
-    cnpj: str = Form(...),
+    cliente: str = Form(...),
+    contato_cliente: str = Form(...),
+    cpf_cnpj: str = Form(""),
+    telefone: str = Form(""),
     data_recebimento: str = Form(...),
     responsavel: str = Form(...),
-    observacoes: str = Form(""),
-    produto: List[str] = Form(...),
-    quantidade: List[int] = Form(...)
+    numero_registro: str = Form(...),
+    tipo_equipamento: str = Form(...),
+    marca_modelo: str = Form(...),
+    numero_serie: str = Form(""),
+    acessorios: str = Form(""),
+    condicao: str = Form(""),
+    observacoes: str = Form("")
 ):
-    itens = [{"produto": p, "quantidade": q} for p, q in zip(produto, quantidade)]
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
-    html_content = env.get_template("nota_recebimento.html").render({
+    html_content = env.get_template("nota_recebimento_cliente.html").render({
         "logo_path": f"file:///{logo_path}",
-        "fornecedor": fornecedor,
-        "cnpj": cnpj,
+        "cliente": cliente,
+        "contato_cliente": contato_cliente,
+        "cpf_cnpj": cpf_cnpj,
+        "telefone": telefone,
         "data_recebimento": data_recebimento,
         "responsavel": responsavel,
-        "observacoes": observacoes,
-        "itens": itens
+        "numero_registro": numero_registro,
+        "tipo_equipamento": tipo_equipamento,
+        "marca_modelo": marca_modelo,
+        "numero_serie": numero_serie,
+        "acessorios": acessorios,
+        "condicao": condicao,
+        "observacoes": observacoes
     })
 
     pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
-    nome_arquivo = f"Nota_Recebimento_{fornecedor.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    nome_arquivo = f"Nota_Recebimento_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
 
     return Response(pdf_bytes, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'})
+                    headers={"Content-Disposition": f'attachment; filename=\"{nome_arquivo}\"'})
 
 
 # ==========================================================

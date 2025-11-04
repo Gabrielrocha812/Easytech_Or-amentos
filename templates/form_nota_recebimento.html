@@ -1,117 +1,217 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nota de Recebimento</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Roboto, sans-serif;
-      background: #fff;
-      color: #333;
-      margin: 0;
-      padding: 30px;
-    }
+    <meta charset="UTF-8">
+    <title>Nota de Recebimento - {{ cliente }}</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 11pt;
+            color: #333;
+            margin: 1.8cm;
+            position: relative;
+        }
 
-    h1 {
-      color: #5e35b1;
-      margin-bottom: 20px;
-    }
+        /* --- Cabeçalho --- */
+        .header {
+            background: linear-gradient(90deg, #673ab7, #512da8);
+            color: #fff;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+        }
+        .logo { width: 200px; height: auto; }
+        .details { text-align: right; }
+        .details h1 { font-size: 22pt; margin: 0; font-weight: 600; }
+        .details p { margin: 3px 0; font-size: 10pt; color: #eee; }
 
-    label { font-weight: 600; margin-top: 10px; display: block; }
+        /* --- Informações Cliente e Recebimento --- */
+        .info {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .info div { width: 48%; }
+        .info h2 {
+            font-size: 10pt;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .info p { line-height: 1.6; font-size: 9pt; }
 
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
+        /* --- Detalhes do Equipamento --- */
+        .equipamento {
+            margin-top: 40px;
+        }
+        .equipamento h3 {
+            color: #512da8;
+            font-size: 11pt;
+            margin-bottom: 10px;
+        }
+        .equipamento table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .equipamento th, .equipamento td {
+            padding: 10px;
+            border-bottom: 1px solid #f2f2f2;
+            font-size: 9.5pt;
+        }
+        .equipamento th {
+            background-color: #f3f1fa;
+            color: #4a148c;
+            text-align: left;
+            width: 35%;
+        }
 
-    button {
-      margin-top: 20px;
-      padding: 12px;
-      background: #5e35b1;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+        /* --- Observações --- */
+        .observacoes {
+            margin-top: 30px;
+        }
+        .observacoes h3 {
+            color: #512da8;
+            font-size: 11pt;
+            margin-bottom: 6px;
+        }
+        .observacoes p {
+            font-size: 9pt;
+            line-height: 1.6;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 6px;
+            min-height: 60px;
+        }
 
-    button:hover { background: #4527a0; }
+        /* --- Assinatura --- */
+        .assinatura {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+        .assinatura div {
+            width: 45%;
+        }
+        .assinatura p {
+            margin-top: 60px;
+            border-top: 1px solid #555;
+            padding-top: 5px;
+            font-size: 9pt;
+            color: #444;
+        }
 
-    .item-row {
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-      margin-top: 10px;
-    }
+        /* --- Rodapé --- */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 9pt;
+            color: #777;
+            padding: 0.8cm 1.8cm;
+            border-top: 1px solid #e0e0e0;
+            background-color: #fafafa;
 
-    .item-row input {
-      flex: 1;
-    }
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
 
-    .btn-secondary {
-      background: #777;
-    }
+        .footer .info {
+            grid-column: 2;
+            text-align: center;
+            line-height: 1.4;
+        }
 
-    .btn-danger {
-      background: #d32f2f;
-    }
-  </style>
+        .footer .qr {
+            grid-column: 3;
+            text-align: right;
+        }
+        .footer .qr img {
+            width: 55px;
+            height: 55px;
+            display: block;
+            margin-left: auto;
+        }
+        .footer .qr p {
+            font-size: 8pt;
+            color: #777;
+            margin-top: 5px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
-  <h1>Nota de Recebimento</h1>
 
-  <form action="/gerar-nota-recebimento" method="post">
-    <label>Fornecedor:</label>
-    <input type="text" name="fornecedor" required>
-
-    <label>CNPJ:</label>
-    <input type="text" name="cnpj" required>
-
-    <label>Data de Recebimento:</label>
-    <input type="text" name="data_recebimento" id="data_recebimento" required>
-
-    <label>Responsável Easytech:</label>
-    <input type="text" name="responsavel" required>
-
-    <h3>Itens Recebidos</h3>
-    <div id="itens-recebimento">
-      <div class="item-row">
-        <input type="text" name="produto" placeholder="Equipamento / Peça" required>
-        <input type="number" name="quantidade" min="1" value="1" required>
-        <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>
-      </div>
+    <div class="header">
+        <img src="{{ logo_path }}" class="logo" alt="Easytech Tecnologia">
+        <div class="details">
+            <h1>Nota de Recebimento</h1>
+            <p><b>Data:</b> {{ data_recebimento }}</p>
+            <p><b>Responsável:</b> {{ responsavel }}</p>
+        </div>
     </div>
 
-    <button type="button" class="btn-secondary" onclick="adicionarItem()">Adicionar Item</button>
+    <div class="info">
+        <div>
+            <h2>CLIENTE</h2>
+            <p>
+                <b>{{ cliente }}</b><br>
+                {{ contato_cliente }}<br>
+                CPF/CNPJ: {{ cpf_cnpj }}<br>
+                Telefone: {{ telefone }}
+            </p>
+        </div>
+        <div>
+            <h2>RECEBIMENTO</h2>
+            <p>
+                Data: {{ data_recebimento }}<br>
+                Recebido por: {{ responsavel }}<br>
+                Nº de Registro: {{ numero_registro }}
+            </p>
+        </div>
+    </div>
 
-    <label>Observações:</label>
-    <textarea name="observacoes" rows="3"></textarea>
+    <div class="equipamento">
+        <h3>Equipamento Recebido</h3>
+        <table>
+            <tr><th>Tipo do Equipamento</th><td>{{ tipo_equipamento }}</td></tr>
+            <tr><th>Marca / Modelo</th><td>{{ marca_modelo }}</td></tr>
+            <tr><th>Número de Série</th><td>{{ numero_serie }}</td></tr>
+            <tr><th>Acessórios Recebidos</th><td>{{ acessorios }}</td></tr>
+            <tr><th>Condição do Equipamento</th><td>{{ condicao }}</td></tr>
+        </table>
+    </div>
 
-    <button type="submit">Gerar PDF</button>
-  </form>
+    <div class="observacoes">
+        <h3>Observações</h3>
+        <p>{{ observacoes }}</p>
+    </div>
 
-  <script>
-    window.onload = function() {
-      document.getElementById('data_recebimento').value = new Date().toLocaleDateString('pt-BR');
-    }
+    <div class="assinatura">
+        <div>
+            <p>Assinatura do Cliente</p>
+        </div>
+        <div>
+            <p>Assinatura do Responsável Easytech</p>
+        </div>
+    </div>
 
-    function adicionarItem() {
-      const div = document.createElement('div');
-      div.className = 'item-row';
-      div.innerHTML = `
-        <input type="text" name="produto" placeholder="Equipamento / Peça" required>
-        <input type="number" name="quantidade" min="1" value="1" required>
-        <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>`;
-      document.getElementById('itens-recebimento').appendChild(div);
-    }
+    <div class="footer">
+        <div class="info">
+            EASYTECH TECNOLOGIA – Soluções Inteligentes para sua Empresa<br>
+            Rua Marechal Deodoro, 64 – Nova Lima/MG | CNPJ 62.839.208/0001-56
+        </div>
+        <div class="qr">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://easytechnl.com.br&size=60x60" alt="QR Code Easytech">
+            <p>Nosso site</p>
+        </div>
+    </div>
 
-    function removerItem(btn) {
-      if (document.querySelectorAll('.item-row').length > 1)
-        btn.parentElement.remove();
-    }
-  </script>
 </body>
 </html>
