@@ -25,9 +25,10 @@
       color: var(--text);
       display: flex;
       min-height: 100vh;
+      flex-direction: row;
     }
 
-    /* --- SIDEBAR --- */
+    /* --- SIDEBAR (desktop) --- */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--primary);
@@ -40,6 +41,7 @@
       top: 0;
       left: 0;
       height: 100%;
+      z-index: 1000;
     }
 
     .sidebar h2 {
@@ -96,35 +98,85 @@
 
     iframe {
       width: 100%;
-      height: 85vh;
+      height: calc(100vh - 120px);
       border: none;
       border-radius: 8px;
       background-color: #fff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    /* --- Responsividade --- */
+    /* --- MODO MOBILE (iPhone e telas <768px) --- */
     @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
       .sidebar {
         position: fixed;
+        bottom: 0;
+        top: auto;
         width: 100%;
-        height: auto;
+        height: 60px;
         flex-direction: row;
         justify-content: space-around;
-        padding: 10px 0;
+        align-items: center;
+        padding: 0;
+        border-top: 3px solid var(--primary-dark);
       }
 
       .sidebar h2, .sidebar-footer {
         display: none;
       }
 
+      .sidebar ul {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+      }
+
+      .sidebar ul li {
+        margin: 0;
+        flex: 1;
+        text-align: center;
+      }
+
+      .sidebar ul li a {
+        padding: 8px 0;
+        font-size: 0.85em;
+      }
+
       .main-content {
-        margin: 100px 10px 20px 10px;
-        padding: 10px;
+        margin: 0;
+        padding: 15px;
+        margin-bottom: 70px; /* espaço para a barra inferior */
+      }
+
+      .main-content h1 {
+        font-size: 1.3em;
+        text-align: center;
       }
 
       iframe {
-        height: 80vh;
+        height: calc(100vh - 140px);
+      }
+    }
+
+    /* --- iPhones pequenos (≤430px) --- */
+    @media (max-width: 430px) {
+      .sidebar ul li a {
+        font-size: 0.8em;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      .main-content h1 {
+        font-size: 1.1em;
+      }
+
+      iframe {
+        height: calc(100vh - 130px);
       }
     }
   </style>
@@ -135,13 +187,13 @@
     <div>
       <h2>⚙️ Easytech Docs</h2>
       <ul>
-        <li><a href="/orcamento" target="conteudo" class="active" onclick="setActive(this)">🧾 Orçamento</a></li>
-        <li><a href="/nota-recebimento" target="conteudo" onclick="setActive(this)">📦 Nota de Recebimento</a></li>
-        <li><a href="/ordem-servico" target="conteudo" onclick="setActive(this)">🛠️ Ordem de Serviço</a></li>
+        <li><a href="/orcamento" target="conteudo" class="active" onclick="setActive(this)">🧾<br>Orçamento</a></li>
+        <li><a href="/nota-recebimento" target="conteudo" onclick="setActive(this)">📦<br>Nota</a></li>
+        <li><a href="/ordem-servico" target="conteudo" onclick="setActive(this)">🛠️<br>Serviço</a></li>
       </ul>
     </div>
     <div class="sidebar-footer">
-      © {{ datetime.now().year }} Easytech Tecnologia<br>
+      © <span id="ano"></span> Easytech Tecnologia<br>
       Soluções Inteligentes
     </div>
   </div>
@@ -156,6 +208,7 @@
       document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
       link.classList.add('active');
     }
+    document.getElementById("ano").textContent = new Date().getFullYear();
   </script>
 
 </body>
