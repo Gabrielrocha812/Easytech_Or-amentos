@@ -209,47 +209,6 @@
         <p>{{ descricao_servico }}</p>
     </div>
 
-    <div class="materiais">
-        <h3>Materiais Utilizados</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Material</th>
-                    <th class="text-right">Valor (R$)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in itens %}
-                <tr>
-                    <td>{{ item.material }}</td>
-                    <td class="text-right">R$ {{ "%.2f"|format(item.valor)|replace('.', ',') }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="total">
-        <table>
-            <tr>
-                <td class="label">Total de Materiais</td>
-                <td class="value">R$ {{ "%.2f"|format(total)|replace('.', ',') }}</td>
-            </tr>
-            <tr>
-                <td class="label grand-total">Total Geral</td>
-                <td class="value grand-total">R$ {{ "%.2f"|format(total)|replace('.', ',') }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="assinatura">
-        <div>
-            <p>Assinatura do Cliente</p>
-        </div>
-        <div>
-            <p>Assinatura do Técnico</p>
-        </div>
-    </div>
 
     <div class="footer">
         <div class="info">
