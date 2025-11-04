@@ -30,7 +30,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     """Página principal com menu lateral."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request, "datetime": datetime })
 
 
 @app.get("/orcamento", response_class=HTMLResponse)
