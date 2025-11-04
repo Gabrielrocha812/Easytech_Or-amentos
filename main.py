@@ -164,12 +164,8 @@ async def gerar_ordem_servico(
     endereco: str = Form(...),
     data_execucao: str = Form(...),
     tecnico: str = Form(...),
-    descricao_servico: str = Form(...),
-    materiais_usados: List[str] = Form(...),
-    valores: List[float] = Form(...)
+    descricao_servico: str = Form(...)
 ):
-    itens = [{"material": m, "valor": v} for m, v in zip(materiais_usados, valores)]
-    total = sum(valores)
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
     html_content = env.get_template("ordem_servico.html").render({
@@ -179,8 +175,6 @@ async def gerar_ordem_servico(
         "data_execucao": data_execucao,
         "tecnico": tecnico,
         "descricao_servico": descricao_servico,
-        "itens": itens,
-        "total": total
     })
 
     pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
