@@ -2,64 +2,77 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Orçamento - {{ cliente }}</title>
+    <title>Proposta Comercial - {{ cliente }}</title>
     <style>
         @page {
             size: A4;
-            margin: 0; /* Remove a margem da página para controlo total */
+            margin: 0;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             font-size: 11pt;
             color: #333;
-            margin: 1.5cm;
+            margin: 1.8cm;
+            position: relative;
         }
 
         /* --- Cabeçalho --- */
         .header {
+            background: linear-gradient(90deg, #673ab7, #512da8);
+            color: #fff;
+            padding: 25px 30px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f2f2f2;
+            align-items: center;
+            border-radius: 8px;
         }
         .logo {
-            width: 250px;
+            width: 230px;
             height: auto;
         }
         .invoice-details {
             text-align: right;
         }
         .invoice-details h1 {
-            font-size: 24pt;
+            font-size: 22pt;
             margin: 0;
-            color: #000;
+            font-weight: 600;
         }
         .invoice-details p {
-            margin: 2px 0;
+            margin: 3px 0;
             font-size: 10pt;
-            color: #777;
+            color: #eee;
+        }
+
+        /* --- Saudação --- */
+        .intro {
+            margin-top: 40px;
+            line-height: 1.6;
+        }
+        .intro p {
+            font-size: 8pt;
+            color: #444;
         }
 
         /* --- Informações do Cliente --- */
         .customer-info {
             display: flex;
             justify-content: space-between;
-            margin-top: 40px;
+            margin-top: 30px;
         }
         .customer-info div {
             width: 48%;
         }
         .customer-info h2 {
-            font-size: 11pt;
+            font-size: 9pt;
             color: #555;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
-            margin-top: 0;
+            margin-bottom: 10px;
         }
         .customer-info p {
             line-height: 1.6;
-            font-size: 10pt;
+            font-size: 9pt;
         }
 
         /* --- Tabela de Itens --- */
@@ -67,31 +80,37 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 40px;
+            border-radius: 6px;
+            overflow: hidden;
         }
         .items-table th, .items-table td {
-            padding: 12px;
+            padding: 10px 12px;
             text-align: left;
         }
         .items-table thead th {
-            background-color: #f8f8f8;
+            background-color: #f3f1fa;
             font-weight: bold;
-            font-size: 9pt;
+            font-size: 9.5pt;
             text-transform: uppercase;
-            color: #555;
-            border-bottom: 2px solid #ddd;
+            color: #4a148c;
+            border-bottom: 2px solid #d1c4e9;
         }
         .items-table tbody tr {
-            border-bottom: 1px solid #f2f2f2;
+            border-bottom: 1px solid #f0f0f0;
         }
         .items-table .text-right {
             text-align: right;
         }
 
-        /* --- Secção de Totais --- */
+        /* --- Totais --- */
         .totals {
             float: right;
             width: 300px;
             margin-top: 30px;
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .totals table {
             width: 100%;
@@ -108,47 +127,99 @@
         .totals .grand-total {
             font-weight: bold;
             font-size: 1.3em;
-            border-top: 2px solid #333;
+            border-top: 2px solid #512da8;
             padding-top: 10px;
+            color: #000;
+        }
+
+        /* --- Condições --- */
+        .conditions {
+            margin-top: 60px;
+        }
+        .conditions h3 {
+            color: #512da8;
+            font-size: 11.5pt;
+            margin-bottom: 8px;
+        }
+        .conditions ul {
+            font-size: 10pt;
+            color: #444;
+            line-height: 1.6;
+            margin: 0;
+            padding-left: 20px;
         }
 
         /* --- Rodapé --- */
         .footer {
             position: fixed;
-            bottom: -1cm;
+            bottom: 0;
             left: 0;
             right: 0;
-            text-align: center;
             font-size: 9pt;
-            color: #aaa;
-            padding: 1.5cm;
-            padding-top: 10px;
-            border-top: 1px solid #f2f2f2;
+            color: #777;
+            padding: 0.8cm 1.8cm;
+            border-top: 1px solid #e0e0e0;
+            background-color: #fafafa;
+
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
         }
 
+        .footer .info {
+            grid-column: 2;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .footer .qr {
+            grid-column: 3;
+            text-align: right;
+        }
+
+        .footer .qr img {
+            width: 55px;
+            height: 55px;
+            display: block;
+            margin-left: auto;
+        }
+        .footer .qr p {
+            font-size: 8pt;
+            color: #777;
+            margin-top: 5px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="{{ logo_path }}" class="logo">
+        <img src="{{ logo_path }}" class="logo" alt="Easytech Tecnologia">
         <div class="invoice-details">
-            <h1>ORÇAMENTO</h1>
+            <h1>Proposta Comercial</h1>
             <p><b>Emissão:</b> {{ emissao }}</p>
             <p><b>Validade:</b> {{ validade }}</p>
         </div>
+    </div>
+
+    <div class="intro">
+        <p>
+            Prezado(a) <b>{{ cliente }}</b>,<br>
+            Agradecemos pela oportunidade de apresentar nossa proposta. 
+            A seguir, detalhamos os serviços e/ou produtos que atendem à sua solicitação, 
+            com o compromisso de qualidade e suporte que caracterizam a <b>Easytech Tecnologia</b>.
+        </p>
     </div>
 
     <div class="customer-info">
         <div>
             <h2>DE:</h2>
             <p>
-                <b>EASYTECH Tecnologia</b><br> 
-                CNPJ: 62.839.208/0001-56<br>
-                Endereço: Rua Marechal Deorodo, 64, Centro, Nova Lima - MG<br>
-                César e Gabriel: (31) 98849-9703<br>
-                easytechnovalima@gmail.com
-                
+                <b>EASYTECH Tecnologia</b><br>
+                <b>CNPJ: 62.839.208/0001-56</b><br>
+                Endereço: Rua Marechal Deodoro, 64, Centro, Nova Lima - MG<br>
+                Contato: (31) 98849-9703<br>
+                E-mail: easytechnovalima@gmail.com
             </p>
         </div>
         <div>
@@ -163,10 +234,10 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th>PRODUTO/SERVIÇO</th>
-                <th class="text-right">QUANT.</th>
-                <th class="text-right">VALOR UNIT.</th>
-                <th class="text-right">TOTAL</th>
+                <th>Produto / Serviço</th>
+                <th class="text-right">Quant.</th>
+                <th class="text-right">Valor Unit.</th>
+                <th class="text-right">Total</th>
             </tr>
         </thead>
         <tbody>
@@ -192,18 +263,31 @@
                 <td class="value">R$ {{ "%.2f"|format(desconto)|replace('.', ',') }}</td>
             </tr>
             <tr>
-                <td class="label grand-total">Total</td>
+                <td class="label grand-total">Total Final</td>
                 <td class="value grand-total">R$ {{ "%.2f"|format(total_final)|replace('.', ',') }}</td>
             </tr>
         </table>
     </div>
 
-    <div class="nota">
-        <h3>Nota: Garantia de serviço 3 meses</h3>
+    <div class="conditions">
+        <h3>Condições Comerciais</h3>
+        <ul>
+            <li><b>Forma de pagamento:</b> 50% na aprovação e 50% na entrega.</li>
+            <li><b>Validade da proposta:</b> {{ validade }}</li>
+            <li><b>Garantia:</b> 3 meses sobre os serviços prestados.</li>
+            <li><b>Prazo de execução:</b> conforme cronograma a ser acordado após aprovação.</li>
+        </ul>
     </div>
 
     <div class="footer">
-        Obrigado pela sua preferência!
+        <div class="info">
+            EASYTECH TECNOLOGIA – Soluções Inteligentes para sua Empresa<br>
+            Rua Marechal Deodoro, 64 – Nova Lima/MG | CNPJ 62.839.208/0001-56
+        </div>
+        <div class="qr">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://easytechnl.com.br&size=60x60" alt="QR Code de confirmação">
+            <p>Nosso site</p>
+        </div>
     </div>
 
 </body>

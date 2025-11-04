@@ -3,279 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Orçamento Responsivo</title>
+    <title>Painel Easytech - Documentos</title>
     <style>
-        /* Estilo base e reset */
-        :root {
-            --primary-color: #0056b3;
-            --primary-hover: #004494;
-            --secondary-color: #6c757d;
-            --secondary-hover: #5a6268;
-            --danger-color: #dc3545;
-            --danger-hover: #c82333;
-            --light-gray: #f8f9fa;
-            --border-color: #ccc;
-            --text-color: #333;
-        }
-
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 2em;
-            background-color: var(--light-gray);
-            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f9;
         }
 
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #fff;
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #512da8, #311b92);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 20px;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        .sidebar button {
+            background: none;
+            border: none;
+            color: #fff;
+            text-align: left;
+            padding: 12px 10px;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar button:hover,
+        .sidebar button.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        .sidebar footer {
+            font-size: 11px;
+            color: #ccc;
+            text-align: center;
+        }
+
+        /* --- CONTEÚDO --- */
+        .content {
+            flex: 1;
             padding: 30px;
+            overflow-y: auto;
+        }
+        .form-container {
+            background: #fff;
+            padding: 25px 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            max-width: 850px;
+            margin: auto;
         }
 
         h1 {
             text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 1em;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
+            color: #512da8;
+            margin-bottom: 25px;
         }
 
         label {
-            margin-top: 15px;
-            margin-bottom: 5px;
             font-weight: 600;
             font-size: 0.9em;
+            margin-top: 15px;
             display: block;
         }
 
-        input, select {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
+        input, textarea {
             width: 100%;
-            font-size: 16px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
         }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 25px;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-secondary { background-color: var(--secondary-color); }
-        .btn-secondary:hover { background-color: var(--secondary-hover); }
-        .btn-danger { background-color: var(--danger-color); }
-        .btn-danger:hover { background-color: var(--danger-hover); }
 
         .form-row {
             display: flex;
             gap: 20px;
         }
+        .form-group { flex: 1; }
 
-        .form-group {
-            flex: 1;
+        button {
+            background-color: #512da8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 25px;
+        }
+        button:hover { background-color: #3d1e8e; }
+
+        .btn-secondary {
+            background-color: #6c757d;
         }
 
-        #itens-container .item-row {
+        hr { margin: 25px 0; border: 0; border-top: 1px solid #eee; }
+
+        .item-row {
             display: flex;
             gap: 10px;
-            align-items: flex-end; /* Alinha itens na base */
+            align-items: flex-end;
             margin-top: 10px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
         }
-        
-        #itens-container .item-row:first-child {
-             border-top: none;
-             padding-top: 0;
-        }
-
-        .item-row .form-group { flex: 1; }
-        .item-row .form-group.produto-servico { flex: 3; } /* Dá mais espaço para a descrição */
-        
+        .item-row input { flex: 1; }
         .item-row .btn-danger {
-            padding: 10px 15px; /* Aumenta a área de toque */
-            margin-bottom: 0; /* Alinha com os inputs */
-            height: 40px; /* Mesma altura dos inputs */
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
         }
+        .item-row .btn-danger:hover { background-color: #b02a37; }
 
-
-        hr {
-            border: 0;
-            border-top: 1px solid #eee;
-            margin: 25px 0;
-        }
-
-        /* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
         @media (max-width: 768px) {
-            body {
-                margin: 1em;
-            }
-
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-            
-            /* Empilha os campos em colunas */
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
-
-            /* Permite que os itens do orçamento quebrem a linha */
-            .item-row {
-                flex-wrap: wrap;
-            }
-            
-            /* O campo de descrição ocupa a linha inteira */
-            .item-row .form-group.produto-servico {
-                flex-basis: 100%;
-            }
-
-            /* O botão de remover também ocupa a linha inteira para fácil toque */
-            .item-row .btn-danger {
-                width: 100%;
-                margin-top: 10px;
-            }
-            
-            .btn-secondary {
-                 width: 100%; /* Botão de adicionar ocupa a largura toda */
-            }
+            .sidebar { width: 100px; }
+            .sidebar h2 { display: none; }
+            .sidebar button { font-size: 12px; }
         }
-
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Gerar Orçamento</h1>
-        <form action="/gerar-pdf" method="post">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="cliente">Nome do Cliente:</label>
-                    <input type="text" id="cliente" name="cliente" value="" required>
-                </div>
-                <div class="form-group">
-                    <label for="contato_cliente">Contato do Cliente:</label>
-                    <input type="text" id="contato_cliente" name="contato_cliente" value="31 " required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="emissao">Data de Emissão:</label>
-                    <input type="text" id="emissao" name="emissao" required>
-                </div>
-                <div class="form-group">
-                    <label for="validade">Data de Validade:</label>
-                    <input type="text" id="validade" name="validade" required>
-                </div>
-            </div>
-            <hr>
-            <h2>Itens do Orçamento</h2>
-            <div id="itens-container">
-                <div class="item-row">
-                    <div class="form-group produto-servico">
-                        <label>Produto/Serviço:</label>
-                        <input type="text" name="produto" value="" required>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div>
+            <h2>EASYTECH</h2>
+            <button class="active" onclick="showForm('orcamento')">🧾 Orçamento</button>
+            <button onclick="showForm('recebimento')">📦 Nota de Recebimento</button>
+            <button onclick="showForm('os')">⚙️ Ordem de Serviço</button>
+        </div>
+        <footer>
+            © 2025 Easytech<br>Nova Lima - MG
+        </footer>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="content">
+        <div id="orcamento" class="form-container">
+            <h1>Gerar Orçamento</h1>
+            <form action="/gerar-pdf" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cliente:</label>
+                        <input type="text" name="cliente" required>
                     </div>
                     <div class="form-group">
-                        <label>Quant.:</label>
+                        <label>Contato:</label>
+                        <input type="text" name="contato_cliente" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Emissão:</label>
+                        <input type="text" name="emissao" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Validade:</label>
+                        <input type="text" name="validade" required>
+                    </div>
+                </div>
+                <hr>
+                <h3>Itens</h3>
+                <div id="itens-container">
+                    <div class="item-row">
+                        <input type="text" name="produto" placeholder="Produto/Serviço" required>
                         <input type="number" name="quantidade" value="1" required min="1">
+                        <input type="number" step="0.01" name="valor_unitario" placeholder="Valor R$" required min="0">
+                        <button type="button" class="btn-danger" onclick="removerItem(this)">X</button>
                     </div>
-                    <div class="form-group">
-                        <label>Val. Unit. (R$):</label>
-                        <input type="number" step="0.01" name="valor_unitario" value="" required min="0">
+                </div>
+                <button type="button" class="btn-secondary" onclick="adicionarItem()">+ Adicionar Item</button>
+                <hr>
+                <label>Desconto (R$):</label>
+                <input type="number" step="0.01" name="desconto" value="0.00">
+                <button type="submit">Gerar PDF</button>
+            </form>
+        </div>
+
+        <div id="recebimento" class="form-container" style="display:none;">
+            <h1>Nota de Recebimento</h1>
+            <form action="/gerar-nota-recebimento" method="post">
+                <div class="form-row">
+                    <div class="form-group"><label>Cliente:</label><input type="text" name="cliente" required></div>
+                    <div class="form-group"><label>Responsável Easytech:</label><input type="text" name="responsavel" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Data de Recebimento:</label><input type="text" name="data_recebimento" required></div>
+                    <div class="form-group"><label>Nº de Registro:</label><input type="text" name="numero_registro" required></div>
+                </div>
+                <hr>
+                <label>Equipamento:</label>
+                <input type="text" name="tipo_equipamento" required>
+                <label>Marca/Modelo:</label>
+                <input type="text" name="marca_modelo">
+                <label>Nº de Série:</label>
+                <input type="text" name="numero_serie">
+                <label>Acessórios Recebidos:</label>
+                <input type="text" name="acessorios">
+                <label>Condição do Equipamento:</label>
+                <textarea name="condicao" rows="3"></textarea>
+                <label>Observações:</label>
+                <textarea name="observacoes" rows="3"></textarea>
+                <button type="submit">Gerar Nota</button>
+            </form>
+        </div>
+
+        <div id="os" class="form-container" style="display:none;">
+            <h1>Ordem de Serviço</h1>
+            <form action="/gerar-ordem-servico" method="post">
+                <div class="form-row">
+                    <div class="form-group"><label>Cliente:</label><input type="text" name="cliente" required></div>
+                    <div class="form-group"><label>Técnico Responsável:</label><input type="text" name="tecnico" required></div>
+                </div>
+                <div class="form-group">
+                    <label>Endereço:</label>
+                    <input type="text" name="endereco" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição do Serviço:</label>
+                    <textarea name="descricao_servico" rows="4" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Data Execução:</label><input type="text" name="data_execucao" required></div>
+                </div>
+                <hr>
+                <h3>Materiais Utilizados</h3>
+                <div id="materiais-container">
+                    <div class="item-row">
+                        <input type="text" name="materiais_usados" placeholder="Material" required>
+                        <input type="number" step="0.01" name="valores" placeholder="Valor R$" required>
+                        <button type="button" class="btn-danger" onclick="removerItem(this)">X</button>
                     </div>
-                    <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>
                 </div>
-            </div>
-            <button type="button" class="btn-secondary" onclick="adicionarItem()" style="margin-top: 20px; max-width: 200px;">Adicionar Item</button>
-            <hr>
-            <div class="form-row">
-                <div class="form-group" style="flex: 2;"></div> <div class="form-group">
-                    <label for="desconto">Desconto Total (R$):</label>
-                    <input type="number" step="0.01" id="desconto" name="desconto" value="0.00" required>
-                </div>
-            </div>
-            <button type="submit">Gerar PDF</button>
-        </form>
+                <button type="button" class="btn-secondary" onclick="adicionarMaterial()">+ Adicionar Material</button>
+                <button type="submit">Gerar OS</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Função para formatar a data como dd/mm/yyyy
-        function formatDate(date) {
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Os meses começam do 0
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
+        function showForm(id) {
+            document.querySelectorAll('.form-container').forEach(f => f.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.sidebar button[onclick="showForm('${id}')"]`).classList.add('active');
         }
 
-        // Executa quando a página termina de carregar
-        window.onload = function() {
-            const emissaoInput = document.getElementById('emissao');
-            const validadeInput = document.getElementById('validade');
-
-            // Define a data de emissão como a data de hoje
-            const hoje = new Date();
-            emissaoInput.value = formatDate(hoje);
-
-            // Calcula a data de validade (1 mês à frente)
-            const dataValidade = new Date(hoje);
-            dataValidade.setMonth(hoje.getMonth() + 1);
-            validadeInput.value = formatDate(dataValidade);
-        };
-        
         function adicionarItem() {
             const container = document.getElementById('itens-container');
-            const novoItem = document.createElement('div');
-            novoItem.className = 'item-row';
-            novoItem.innerHTML = `
-                <div class="form-group produto-servico">
-                    <label>Produto/Serviço:</label>
-                    <input type="text" name="produto" placeholder="Descrição do produto/serviço" required>
-                </div>
-                <div class="form-group">
-                    <label>Quant.:</label>
-                    <input type="number" name="quantidade" value="1" required min="1">
-                </div>
-                <div class="form-group">
-                    <label>Val. Unit. (R$):</label>
-                    <input type="number" step="0.01" name="valor_unitario" value="0.00" required min="0">
-                </div>
-                <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>`;
-            container.appendChild(novoItem);
+            const item = document.createElement('div');
+            item.className = 'item-row';
+            item.innerHTML = `
+                <input type="text" name="produto" placeholder="Produto/Serviço" required>
+                <input type="number" name="quantidade" value="1" required min="1">
+                <input type="number" step="0.01" name="valor_unitario" placeholder="Valor R$" required min="0">
+                <button type="button" class="btn-danger" onclick="removerItem(this)">X</button>`;
+            container.appendChild(item);
         }
 
-        function removerItem(botao) {
-            if (document.querySelectorAll('.item-row').length > 1) {
-                botao.parentElement.remove();
-            } else {
-                alert('É necessário ter pelo menos um item no orçamento.');
-            }
+        function adicionarMaterial() {
+            const container = document.getElementById('materiais-container');
+            const item = document.createElement('div');
+            item.className = 'item-row';
+            item.innerHTML = `
+                <input type="text" name="materiais_usados" placeholder="Material" required>
+                <input type="number" step="0.01" name="valores" placeholder="Valor R$" required>
+                <button type="button" class="btn-danger" onclick="removerItem(this)">X</button>`;
+            container.appendChild(item);
+        }
+
+        function removerItem(btn) {
+            btn.parentElement.remove();
         }
     </script>
 </body>

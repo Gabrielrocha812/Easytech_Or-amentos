@@ -86,3 +86,63 @@ async def gerar_pdf(
     }
 
     return Response(content=pdf_bytes, media_type="application/pdf", headers=headers)
+
+@app.post("/gerar-nota-recebimento")
+async def gerar_nota_recebimento(
+    fornecedor: str = Form(...),
+    cnpj: str = Form(...),
+    data_recebimento: str = Form(...),
+    responsavel: str = Form(...),
+    observacoes: str = Form(""),
+    produto: List[str] = Form(...),
+    quantidade: List[int] = Form(...)
+):
+    itens = [{"produto": p, "quantidade": q} for p, q in zip(produto, quantidade)]
+    logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
+
+    html = env.get_template("nota_recebimento.html").render({
+        "logo_path": f"file:///{logo_path}",
+        "fornecedor": fornecedor,
+        "cnpj": cnpj,
+        "data_recebimento": data_recebimento,
+        "responsavel": responsavel,
+        "observacoes": observacoes,
+        "itens": itens
+    })
+
+    pdf_bytes = HTML(string=html, base_url=BASE_DIR).write_pdf()
+    nome_download = f"Nota_Recebimento_{fornecedor}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    return Response(pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{nome_download}"'})
+
+
+# --- Ordem de Serviço ---
+@app.post("/gerar-ordem-servico")
+async def gerar_ordem_servico(
+    cliente: str = Form(...),
+    endereco: str = Form(...),
+    data_execucao: str = Form(...),
+    tecnico: str = Form(...),
+    descricao_servico: str = Form(...),
+    materiais_usados: List[str] = Form(...),
+    valores: List[float] = Form(...)
+):
+    itens = [{"material": m, "valor": v} for m, v in zip(materiais_usados, valores)]
+    total = sum(valores)
+    logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
+
+    html = env.get_template("ordem_servico.html").render({
+        "logo_path": f"file:///{logo_path}",
+        "cliente": cliente,
+        "endereco": endereco,
+        "data_execucao": data_execucao,
+        "tecnico": tecnico,
+        "descricao_servico": descricao_servico,
+        "itens": itens,
+        "total": total
+    })
+
+    pdf_bytes = HTML(string=html, base_url=BASE_DIR).write_pdf()
+    nome_download = f"Ordem_Servico_{cliente}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    return Response(pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{nome_download}"'})
