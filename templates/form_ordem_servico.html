@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ordem de Serviço</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      color: #333;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #5e35b1;
+      margin-bottom: 20px;
+    }
+
+    label { font-weight: 600; margin-top: 10px; display: block; }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background: #5e35b1;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #4527a0; }
+
+    .item-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      margin-top: 10px;
+    }
+
+    .item-row input {
+      flex: 1;
+    }
+
+    .btn-secondary {
+      background: #777;
+    }
+
+    .btn-danger {
+      background: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ordem de Serviço</h1>
+
+  <form action="/gerar-ordem-servico" method="post">
+    <label>Cliente:</label>
+    <input type="text" name="cliente" required>
+
+    <label>Endereço:</label>
+    <input type="text" name="endereco" required>
+
+    <label>Data de Execução:</label>
+    <input type="text" name="data_execucao" id="data_execucao" required>
+
+    <label>Técnico Responsável:</label>
+    <input type="text" name="tecnico" required>
+
+    <label>Descrição do Serviço:</label>
+    <textarea name="descricao_servico" rows="4" required></textarea>
+
+    <h3>Materiais Utilizados</h3>
+    <div id="materiais">
+      <div class="item-row">
+        <input type="text" name="materiais_usados" placeholder="Material" required>
+        <input type="number" name="valores" step="0.01" min="0" placeholder="Valor R$" required>
+        <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>
+      </div>
+    </div>
+
+    <button type="button" class="btn-secondary" onclick="adicionarItem()">Adicionar Material</button>
+    <button type="submit">Gerar PDF</button>
+  </form>
+
+  <script>
+    window.onload = function() {
+      document.getElementById('data_execucao').value = new Date().toLocaleDateString('pt-BR');
+    }
+
+    function adicionarItem() {
+      const div = document.createElement('div');
+      div.className = 'item-row';
+      div.innerHTML = `
+        <input type="text" name="materiais_usados" placeholder="Material" required>
+        <input type="number" name="valores" step="0.01" min="0" placeholder="Valor R$" required>
+        <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>`;
+      document.getElementById('materiais').appendChild(div);
+    }
+
+    function removerItem(btn) {
+      if (document.querySelectorAll('.item-row').length > 1)
+        btn.parentElement.remove();
+    }
+  </script>
+</body>
+</html>

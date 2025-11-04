@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easytech - Gerador de Documentos</title>
+  <style>
+    :root {
+      --primary: #5e35b1;
+      --primary-dark: #4527a0;
+      --bg: #f4f4f9;
+      --text: #333;
+      --sidebar-width: 230px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--primary);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      font-weight: 600;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      margin: 8px 0;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 12px 20px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: var(--primary-dark);
+    }
+
+    .sidebar-footer {
+      font-size: 0.8em;
+      text-align: center;
+      padding: 15px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      opacity: 0.9;
+    }
+
+    /* --- CONTEÚDO PRINCIPAL --- */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 40px;
+      flex-grow: 1;
+    }
+
+    .main-content h1 {
+      color: var(--primary);
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 85vh;
+      border: none;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* --- Responsividade --- */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px 0;
+      }
+
+      .sidebar h2, .sidebar-footer {
+        display: none;
+      }
+
+      .main-content {
+        margin: 100px 10px 20px 10px;
+        padding: 10px;
+      }
+
+      iframe {
+        height: 80vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div>
+      <h2>⚙️ Easytech Docs</h2>
+      <ul>
+        <li><a href="/orcamento" target="conteudo" class="active" onclick="setActive(this)">🧾 Orçamento</a></li>
+        <li><a href="/nota-recebimento" target="conteudo" onclick="setActive(this)">📦 Nota de Recebimento</a></li>
+        <li><a href="/ordem-servico" target="conteudo" onclick="setActive(this)">🛠️ Ordem de Serviço</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-footer">
+      © {{ datetime.now().year }} Easytech Tecnologia<br>
+      Soluções Inteligentes
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1>Gerador de Documentos</h1>
+    <iframe name="conteudo" src="/orcamento"></iframe>
+  </div>
+
+  <script>
+    function setActive(link) {
+      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

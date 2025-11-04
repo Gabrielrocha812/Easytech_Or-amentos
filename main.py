@@ -1,50 +1,74 @@
 import os
-import random
 from datetime import datetime
+from typing import List
 from fastapi import FastAPI, Form, Request
-from fastapi.responses import Response
+from fastapi.responses import Response, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from typing import List
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
 
 app = FastAPI()
 
-# --- Configuração de Diretórios e Templates ---
+# --- Diretórios base ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
-# Monta o diretório estático para acesso público (se necessário)
+# --- Monta diretório estático ---
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-# Configura o Jinja2 para carregar templates
+# --- Configura Jinja2 ---
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-# --- Rotas da Aplicação ---
-@app.get("/")
-async def form_page(request: Request):
-    # O form.html que suporta múltiplos produtos
-    return templates.TemplateResponse("form.html", {"request": request})
+
+# ==========================================================
+#   PÁGINAS PRINCIPAIS
+# ==========================================================
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    """Página principal com menu lateral."""
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/orcamento", response_class=HTMLResponse)
+async def form_orcamento(request: Request):
+    """Formulário de orçamento."""
+    return templates.TemplateResponse("form_orcamento.html", {"request": request})
+
+
+@app.get("/nota-recebimento", response_class=HTMLResponse)
+async def form_nota_recebimento(request: Request):
+    """Formulário de nota de recebimento."""
+    return templates.TemplateResponse("form_nota_recebimento.html", {"request": request})
+
+
+@app.get("/ordem-servico", response_class=HTMLResponse)
+async def form_ordem_servico(request: Request):
+    """Formulário de ordem de serviço."""
+    return templates.TemplateResponse("form_ordem_servico.html", {"request": request})
+
+
+# ==========================================================
+#   GERAÇÃO DE PDF — ORÇAMENTO
+# ==========================================================
 
 @app.post("/gerar-pdf")
 async def gerar_pdf(
-    # --- Dados do Cabeçalho e Rodapé ---
     cliente: str = Form(...),
     contato_cliente: str = Form(...),
     emissao: str = Form(...),
     validade: str = Form(...),
     desconto: float = Form(...),
-    # --- Dados dos Itens (Listas) ---
     produto: List[str] = Form(...),
     quantidade: List[int] = Form(...),
     valor_unitario: List[float] = Form(...)
 ):
-    # --- Processamento dos Dados ---
     itens = []
     subtotal = 0
+
     for i in range(len(produto)):
         total_item = quantidade[i] * valor_unitario[i]
         subtotal += total_item
@@ -56,12 +80,9 @@ async def gerar_pdf(
         })
 
     total_final = subtotal - desconto
-
-    # Caminho absoluto para a imagem da logo
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
-    # Dados a serem passados para o template HTML
-    template_data = {
+    html_content = env.get_template("invoice_template.html").render({
         "logo_path": f"file:///{logo_path}",
         "cliente": cliente,
         "contato_cliente": contato_cliente,
@@ -71,21 +92,18 @@ async def gerar_pdf(
         "subtotal": subtotal,
         "desconto": desconto,
         "total_final": total_final
-    }
-    
-    # --- Geração do PDF a partir do HTML ---
-    template = env.get_template("invoice_template.html")
-    html_string = template.render(template_data)
+    })
 
-    pdf_bytes = HTML(string=html_string, base_url=BASE_DIR).write_pdf()
+    pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
+    nome_arquivo = f"Orcamento_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
 
-    # --- Resposta do Servidor ---
-    nome_download = f"Orcamento_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
-    headers = {
-        'Content-Disposition': f'attachment; filename="{nome_download}"'
-    }
+    return Response(pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'})
 
-    return Response(content=pdf_bytes, media_type="application/pdf", headers=headers)
+
+# ==========================================================
+#   GERAÇÃO DE PDF — NOTA DE RECEBIMENTO
+# ==========================================================
 
 @app.post("/gerar-nota-recebimento")
 async def gerar_nota_recebimento(
@@ -100,7 +118,7 @@ async def gerar_nota_recebimento(
     itens = [{"produto": p, "quantidade": q} for p, q in zip(produto, quantidade)]
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
-    html = env.get_template("nota_recebimento.html").render({
+    html_content = env.get_template("nota_recebimento.html").render({
         "logo_path": f"file:///{logo_path}",
         "fornecedor": fornecedor,
         "cnpj": cnpj,
@@ -110,13 +128,17 @@ async def gerar_nota_recebimento(
         "itens": itens
     })
 
-    pdf_bytes = HTML(string=html, base_url=BASE_DIR).write_pdf()
-    nome_download = f"Nota_Recebimento_{fornecedor}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
+    nome_arquivo = f"Nota_Recebimento_{fornecedor.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
+
     return Response(pdf_bytes, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="{nome_download}"'})
+                    headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'})
 
 
-# --- Ordem de Serviço ---
+# ==========================================================
+#   GERAÇÃO DE PDF — ORDEM DE SERVIÇO
+# ==========================================================
+
 @app.post("/gerar-ordem-servico")
 async def gerar_ordem_servico(
     cliente: str = Form(...),
@@ -131,7 +153,7 @@ async def gerar_ordem_servico(
     total = sum(valores)
     logo_path = os.path.join(STATIC_DIR, "logo.png").replace("\\", "/")
 
-    html = env.get_template("ordem_servico.html").render({
+    html_content = env.get_template("ordem_servico.html").render({
         "logo_path": f"file:///{logo_path}",
         "cliente": cliente,
         "endereco": endereco,
@@ -142,7 +164,8 @@ async def gerar_ordem_servico(
         "total": total
     })
 
-    pdf_bytes = HTML(string=html, base_url=BASE_DIR).write_pdf()
-    nome_download = f"Ordem_Servico_{cliente}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
+    nome_arquivo = f"Ordem_Servico_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
+
     return Response(pdf_bytes, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="{nome_download}"'})
+                    headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'})
