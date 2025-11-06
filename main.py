@@ -160,6 +160,8 @@ async def gerar_nota_recebimento(
 
 @app.post("/gerar-ordem-servico")
 async def gerar_ordem_servico(
+    numero_os: str = Form(...),
+    data_abertura: str = Form(...),
     cliente: str = Form(...),
     endereco: str = Form(...),
     data_execucao: str = Form(...),
@@ -170,6 +172,8 @@ async def gerar_ordem_servico(
 
     html_content = env.get_template("ordem_servico.html").render({
         "logo_path": f"file:///{logo_path}",
+        "numero_os": numero_os,
+        "data_abertura": data_abertura,
         "cliente": cliente,
         "endereco": endereco,
         "data_execucao": data_execucao,
@@ -178,7 +182,10 @@ async def gerar_ordem_servico(
     })
 
     pdf_bytes = HTML(string=html_content, base_url=BASE_DIR).write_pdf()
-    nome_arquivo = f"Ordem_Servico_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    nome_arquivo = f"OS_{numero_os}_{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
 
-    return Response(pdf_bytes, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'})
+    return Response(
+        pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'}
+    )

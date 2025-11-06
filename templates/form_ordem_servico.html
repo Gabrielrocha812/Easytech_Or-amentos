@@ -154,6 +154,13 @@
   <h1>Ordem de Serviço</h1>
 
   <form action="/gerar-ordem-servico" method="post">
+
+  <label>Nº da OS:</label>
+  <input type="text" name="numero_os" required>
+
+  <label>Data de Abertura:</label>
+  <input type="text" name="data_abertura" id="data_abertura" required>
+
     <label>Cliente:</label>
     <input type="text" name="cliente" required>
 
@@ -169,21 +176,13 @@
     <label>Descrição do Serviço:</label>
     <textarea name="descricao_servico" rows="4" required></textarea>
 
-    <div id="materiais">
-      <label>Materiais e Valores:</label>
-      <div class="item-row">
-        <input type="text" name="materiais_usados" placeholder="Material" required>
-        <input type="number" name="valores" step="0.01" min="0" placeholder="Valor R$" required>
-        <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>
-      </div>
-    </div>
 
-    <button type="button" class="btn-secondary" onclick="adicionarItem()">+ Adicionar Item</button>
     <button type="submit">Gerar PDF</button>
   </form>
 
   <script>
     window.onload = function() {
+      document.getElementById('data_abertura').value = new Date().toLocaleDateString('pt-BR');
       document.getElementById('data_execucao').value = new Date().toLocaleDateString('pt-BR');
     }
 
