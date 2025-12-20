@@ -189,3 +189,7 @@ async def gerar_ordem_servico(
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{nome_arquivo}"'}
     )
+
+@app.get("/site", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("site.html", {"request": request})
