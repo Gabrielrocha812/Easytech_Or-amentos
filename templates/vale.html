@@ -1,0 +1,1929 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vale do Sereno — Associação & Programa de Afiliados</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- AOS (reveal on scroll) -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            serenogreen: '#08843b',
+            serenoyellow: '#c6c335',
+            serenodark: '#2b2e34',
+            ink: '#0b1220',
+          },
+          boxShadow: {
+            soft: '0 20px 60px rgba(0,0,0,.12)',
+            glow: '0 0 0 8px rgba(8,132,59,.15)',
+          },
+          keyframes: {
+            floaty: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+            shimmer: { '0%': { transform: 'translateX(-120%)' }, '100%': { transform: 'translateX(120%)' } },
+            pulseRing: { '0%': { transform: 'scale(1)', opacity: .55 }, '100%': { transform: 'scale(1.35)', opacity: 0 } },
+          },
+          animation: {
+            floaty: 'floaty 6s ease-in-out infinite',
+            shimmer: 'shimmer 2.4s ease-in-out infinite',
+            pulseRing: 'pulseRing 1.8s ease-out infinite',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* =========================
+       THEME SYSTEM (CHAPTERS)
+    ========================== */
+    :root{
+      --bg: #ffffff;
+      --text: #2b2e34;
+      --muted: rgba(0,0,0,.65);
+      --card: rgba(255,255,255,.78);
+      --ring: rgba(198,195,53,.35);
+      --navbg: rgba(255,255,255,.70);
+      --border: rgba(0,0,0,.08);
+    }
+
+    html, body { height: 100%; }
+    body{
+      background: var(--bg);
+      color: var(--text);
+      transition: background-color .55s ease, color .55s ease;
+    }
+
+    /* Cursor custom */
+    
+    .cursor-dot, .cursor-ring {
+      position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+    }
+    .cursor-dot { width: 7px; height: 7px; border-radius: 9999px; background: #c6c335; box-shadow: 0 0 25px rgba(198,195,53,.45); }
+    .cursor-ring { width: 36px; height: 36px; border-radius: 9999px; border: 1px solid var(--ring); backdrop-filter: blur(6px); }
+    @media (max-width: 1024px) { body { cursor: auto; } .cursor-dot,.cursor-ring{ display:none; } }
+
+    /* Gradient noise overlay */
+    .noise::before{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="220" height="220" filter="url(%23n)" opacity=".12"/></svg>');
+      mix-blend-mode: overlay;
+    }
+
+    :focus-visible{ outline: 3px solid rgba(198,195,53,.55); outline-offset: 3px; border-radius: 12px; }
+
+    /* Cinematic hero: vignette + film */
+    .cinema-vignette{
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.08), transparent 55%),
+        radial-gradient(circle at 50% 110%, rgba(0,0,0,.22), transparent 55%),
+        radial-gradient(circle at 15% 20%, rgba(8,132,59,.18), transparent 55%),
+        radial-gradient(circle at 85% 85%, rgba(198,195,53,.16), transparent 60%);
+      pointer-events:none;
+    }
+    .film-scan{
+      position:absolute; inset:0; pointer-events:none; opacity:.25;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.08), transparent);
+      transform: translateY(-30%);
+      filter: blur(0.5px);
+    }
+
+    /* Horizontal gallery */
+    .hscroll-wrap { overflow: hidden; }
+    .hscroll-track { display:flex; width: max-content; }
+    .hpanel { width: 100vw; max-width: 100vw; }
+
+    /* Prevent body jump while pinning */
+    .pin-spacer { z-index: 0 !important; }
+
+    /* Optional: better text color in dark chapter */
+    body[data-theme="dark"] .text-black\/70,
+    body[data-theme="dark"] .text-black\/60{
+      color: rgba(255,255,255,.78) !important;
+    }
+    body[data-theme="dark"] .border-black\/10,
+    body[data-theme="dark"] .border-black\/5{
+      border-color: rgba(255,255,255,.12) !important;
+    }
+  </style>
+</head>
+
+<body class="antialiased selection:bg-serenoyellow/30 selection:text-serenodark overflow-x-hidden">
+
+  <!-- Custom cursor -->
+  <div class="cursor-ring"></div>
+  <div class="cursor-dot"></div>
+
+  <!-- Top progress bar -->
+  <div id="progress" class="fixed top-0 left-0 h-[3px] w-0 bg-gradient-to-r from-serenogreen via-serenoyellow to-serenogreen z-[60]"></div>
+
+  <!-- Navbar -->
+  <header class="fixed top-0 inset-x-0 z-50">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav id="nav" class="mt-4 rounded-2xl border border-black/5 bg-white/70 backdrop-blur-xl shadow-soft">
+        <div class="flex items-center justify-between px-4 py-3">
+          <a href="#top" class="flex items-center gap-3 group">
+            <img src="logo_vale.svg" alt="Vale do Sereno" class="h-10 w-auto drop-shadow-sm" />
+            <div class="leading-tight hidden sm:block">
+              <p class="font-semibold tracking-tight">Vale do Sereno</p>
+              <p class="text-xs text-black/50">Associação & Afiliados</p>
+            </div>
+          </a>
+
+          <div class="hidden lg:flex items-center gap-1">
+            <a class="navlink px-4 py-2 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/5 transition" href="#programa">Programa</a>
+            <a class="navlink px-4 py-2 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/5 transition" href="#beneficios">Benefícios</a>
+            <a class="navlink px-4 py-2 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/5 transition" href="#afiliados">Estabelecimentos</a>
+            <a class="navlink px-4 py-2 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/5 transition" href="#app">Aplicativo</a>
+            <a class="navlink px-4 py-2 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/5 transition" href="#galeria">Galeria</a>
+            <a class="navlink px-4 py-2 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/5 transition" href="#igreja">Igreja Bom Jesus do Vale</a>
+           </div>
+
+          <div class="flex items-center gap-2">
+            <button id="openContact"
+              class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
+                     bg-serenodark text-white hover:opacity-95 transition shadow-soft">
+              <i class="bi bi-chat-dots"></i> Fale conosco
+            </button>
+
+            <a id="whatsTop" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
+                     bg-serenogreen text-white hover:shadow-glow transition shadow-soft"
+              href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20o%20Programa%20do%20Vale%20do%20Sereno.">
+              <i class="bi bi-whatsapp"></i> WhatsApp
+            </a>
+
+            <button id="openMobile" class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 bg-white hover:bg-black/5 transition">
+              <i class="bi bi-list text-xl"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden lg:hidden px-4 pb-4">
+          <div class="grid gap-2">
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#programa">Programa</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#beneficios">Benefícios</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#afiliados">Estabelecimentos</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#app">Aplicativo</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#galeria">Galeria</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#igreja">Igreja</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#depoimentos">Depoimentos</a>
+            <a class="px-4 py-3 rounded-xl bg-black/5 hover:bg-black/10 transition" href="#faq">FAQ</a>
+            <button id="openContactMobile" class="px-4 py-3 rounded-xl bg-serenodark text-white font-semibold hover:opacity-95 transition">
+              Fale conosco
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  
+
+  <!-- Hero -->
+  <main id="top" class="pt-28">
+<section>
+<!-- BACKGROUND HERO (SUBSTITUIR SOMENTE AQUI) -->
+<div class="absolute inset-0 -z-10">
+  <img
+    src="https://gasmig.com.br/wp-content/uploads/2025/01/WhatsApp-Image-2025-01-15-at-15.28.40.webp"
+    alt="Vale do Sereno"
+    class="w-full h-full object-cover scale-[1,8] opacity-[0.3] blur-[px]"
+  />
+
+  <!-- Overlay claro para preservar legibilidade -->
+  <div class="absolute inset-0 bg-gradient-to-b from-white/55 via-white/70 to-white/90"></div>
+</div>
+
+  
+>
+
+  <!-- Overlay para contraste -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-white/85"></div>
+
+  <!-- Partículas -->
+  <div id="particles" class="absolute inset-0"></div>
+
+  <!-- Vinheta cinematográfica -->
+  <div class="cinema-vignette absolute inset-0"></div>
+
+  <!-- Conteúdo -->
+  <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 pb-20">
+    <div class="grid lg:grid-cols-2 gap-10 items-center">
+
+      <!-- TEXTO -->
+      <div>
+        <div class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 backdrop-blur px-4 py-2 text-sm shadow-soft mb-5">
+          <span class="inline-flex h-2 w-2 rounded-full bg-serenogreen"></span>
+          Associação • Benefícios • Afiliados
+        </div>
+
+        <h1 id="heroTitle"
+          class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-serenodark">
+          Conecte moradores e estabelecimentos com uma experiência premium.
+        </h1>
+
+        <p id="heroLead"
+          class="mt-5 text-base sm:text-lg text-black/70 max-w-xl">
+          O Vale do Sereno integra a comunidade com um programa de afiliados elegante:
+          vantagens reais para moradores, visibilidade qualificada para negócios e
+          governança clara pela Associação.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="#programa"
+             class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold
+                    bg-serenogreen text-white shadow-soft hover:shadow-glow transition">
+            Conhecer o programa
+            <i class="bi bi-arrow-right-short text-xl"></i>
+          </a>
+
+          <button id="openContactHero"
+             class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold
+                    bg-white/80 backdrop-blur border border-black/10 hover:bg-white transition shadow-soft">
+            Solicitar apresentação
+            <i class="bi bi-file-earmark-text"></i>
+          </button>
+        </div>
+
+        <div class="mt-10 grid grid-cols-3 gap-3 max-w-xl">
+          <div class="rounded-2xl border border-black/10 bg-white/70 backdrop-blur p-4 shadow-soft">
+            <p class="text-2xl font-extrabold">+Vantagens</p>
+            <p class="text-xs text-black/60 mt-1">para moradores</p>
+          </div>
+          <div class="rounded-2xl border border-black/10 bg-white/70 backdrop-blur p-4 shadow-soft">
+            <p class="text-2xl font-extrabold">+Visibilidade</p>
+            <p class="text-xs text-black/60 mt-1">para negócios</p>
+          </div>
+          <div class="rounded-2xl border border-black/10 bg-white/70 backdrop-blur p-4 shadow-soft">
+            <p class="text-2xl font-extrabold">+Gestão</p>
+            <p class="text-xs text-black/60 mt-1">pela Associação</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL VISUAL -->
+      <div class="relative">
+        <div class="absolute -inset-6 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(8,132,59,.25),rgba(198,195,53,.20),rgba(43,46,52,.15),rgba(8,132,59,.25))] blur-2xl opacity-80"></div>
+
+        <div id="heroPanel"
+          class="relative rounded-3xl border border-black/10 bg-white/80 backdrop-blur shadow-soft overflow-hidden">
+          <div class="p-6 sm:p-8">
+            <div class="flex items-center justify-between">
+              <p class="font-semibold">Painel do Programa</p>
+              <span class="text-xs px-3 py-1 rounded-full bg-serenogreen/10 text-serenogreen border border-serenogreen/20">
+                Demonstração
+              </span>
+            </div>
+
+            <div class="mt-6 grid gap-4">
+              <div class="rounded-2xl border border-black/10 bg-white p-4 flex gap-3">
+                <div class="h-10 w-10 rounded-2xl bg-serenogreen/10 grid place-items-center">
+                  <i class="bi bi-shield-check text-serenogreen text-xl"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Validação</p>
+                  <p class="text-sm text-black/60">Regras claras e acesso controlado.</p>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-black/10 bg-white p-4 flex gap-3">
+                <div class="h-10 w-10 rounded-2xl bg-serenoyellow/15 grid place-items-center">
+                  <i class="bi bi-stars text-serenodark text-xl"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Destaques</p>
+                  <p class="text-sm text-black/60">Afiliados com vitrine premium.</p>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-black/10 bg-white p-4 flex gap-3">
+                <div class="h-10 w-10 rounded-2xl bg-serenodark/10 grid place-items-center">
+                  <i class="bi bi-graph-up text-serenodark text-xl"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Transparência</p>
+                  <p class="text-sm text-black/60">Relatórios e métricas claras.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 rounded-2xl bg-serenodark text-white p-4 flex items-center justify-between">
+              <div>
+                <p class="font-semibold">Pronto para começar?</p>
+                <p class="text-sm text-white/80">Solicite a apresentação institucional.</p>
+              </div>
+              <button id="openContactCard"
+                class="px-4 py-2 rounded-xl bg-white text-serenodark font-semibold hover:opacity-95 transition">
+                Solicitar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute -bottom-6 -left-6 rounded-2xl border border-black/10 bg-white/80 backdrop-blur p-4 shadow-soft animate-floaty">
+          <p class="text-sm font-semibold">Experiência premium</p>
+          <p class="text-xs text-black/60">Design & usabilidade</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+    <!-- Scroll storytelling: steps -->
+    <section id="programa" class="py-16 lg:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10 items-start">
+          <div class="lg:col-span-5">
+            <div class="sticky top-28">
+              <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up">
+                Um programa que funciona como um ecossistema.
+              </h2>
+              <p class="mt-4 text-black/70 max-w-md" data-aos="fade-up" data-aos-delay="80">
+                A Associação organiza; os estabelecimentos ganham demanda qualificada; moradores usufruem benefícios reais.
+              </p>
+
+              <div class="mt-7 flex gap-3" data-aos="fade-up" data-aos-delay="140">
+                <a href="#afiliados" class="px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+                  Ver estabelecimentos
+                </a>
+                <a href="#beneficios" class="px-5 py-3 rounded-2xl bg-white border border-black/10 font-semibold shadow-soft hover:bg-black/5 transition">
+                  Ver benefícios
+                </a>
+              </div>
+
+              <div class="mt-10 rounded-3xl border border-black/10 bg-gradient-to-br from-serenogreen/10 via-white to-serenoyellow/10 p-6 shadow-soft" data-aos="fade-up" data-aos-delay="200">
+                <p class="text-sm font-semibold">Destaque</p>
+                <p class="mt-2 text-black/70">
+                  Integração simples: divulgação por QR Code, lista de afiliados, vantagens por categoria e canal direto via WhatsApp.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="grid gap-6">
+              <article class="reveal rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-soft" data-step="1">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div class="h-12 w-12 rounded-2xl bg-serenogreen/10 grid place-items-center">
+                      <i class="bi bi-1-circle text-serenogreen text-2xl"></i>
+                    </div>
+                    <div class="absolute inset-0 rounded-2xl border border-serenogreen/20"></div>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold">Curadoria e regras do programa</h3>
+                    <p class="mt-2 text-black/70">
+                      Defina categorias (escola, mercado, academia, serviços), critérios de entrada, benefícios e periodicidade.
+                    </p>
+                    <ul class="mt-4 grid gap-2 text-sm text-black/70">
+                      <li class="flex gap-2"><i class="bi bi-check2 text-serenogreen"></i> Termos transparentes e padronizados</li>
+                      <li class="flex gap-2"><i class="bi bi-check2 text-serenogreen"></i> Níveis de destaque (essencial / premium)</li>
+                      <li class="flex gap-2"><i class="bi bi-check2 text-serenogreen"></i> Canal oficial de comunicação</li>
+                    </ul>
+                  </div>
+                </div>
+              </article>
+
+              <article class="reveal rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-soft" data-step="2">
+                <div class="flex items-start gap-4">
+                  <div class="h-12 w-12 rounded-2xl bg-serenoyellow/15 grid place-items-center">
+                    <i class="bi bi-2-circle text-serenodark text-2xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold">Experiência premium para moradores</h3>
+                    <p class="mt-2 text-black/70">
+                      Uma vitrine bonita e rápida: ofertas, benefícios, e contato direto com o afiliado (sem fricção).
+                    </p>
+                    <div class="mt-5 grid sm:grid-cols-2 gap-3">
+                      <div class="rounded-2xl border border-black/10 p-4 bg-black/5">
+                        <p class="font-semibold">Acesso</p>
+                        <p class="text-sm text-black/70 mt-1">Página única com navegação fluida e inteligente.</p>
+                      </div>
+                      <div class="rounded-2xl border border-black/10 p-4 bg-black/5">
+                        <p class="font-semibold">Confiança</p>
+                        <p class="text-sm text-black/70 mt-1">Afiliados verificados e padronização visual.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="reveal rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-soft" data-step="3">
+                <div class="flex items-start gap-4">
+                  <div class="h-12 w-12 rounded-2xl bg-serenodark/10 grid place-items-center">
+                    <i class="bi bi-3-circle text-serenodark text-2xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold">Resultados para estabelecimentos</h3>
+                    <p class="mt-2 text-black/70">
+                      Mais visibilidade, demanda qualificada e presença no ecossistema do bairro.
+                    </p>
+                    <ul class="mt-4 grid gap-2 text-sm text-black/70">
+                      <li class="flex gap-2"><i class="bi bi-check2 text-serenogreen"></i> Card premium com CTA direto</li>
+                      <li class="flex gap-2"><i class="bi bi-check2 text-serenogreen"></i> Conteúdo de apresentação (kit do afiliado)</li>
+                      <li class="flex gap-2"><i class="bi bi-check2 text-serenogreen"></i> Métricas de interesse e contatos</li>
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits -->
+    <section id="beneficios" class="py-16 lg:py-24 bg-[radial-gradient(circle_at_30%_0%,rgba(8,132,59,.10),transparent_45%),radial-gradient(circle_at_70%_100%,rgba(198,195,53,.12),transparent_50%)]">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up">Benefícios que fazem sentido</h2>
+            <p class="mt-3 text-black/70 max-w-2xl" data-aos="fade-up" data-aos-delay="80">
+              Um catálogo de vantagens com visual moderno, curadoria e foco no que realmente melhora o dia a dia.
+            </p>
+          </div>
+          <div class="flex gap-3" data-aos="fade-up" data-aos-delay="120">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-black/10 shadow-soft">
+              <span class="h-2 w-2 rounded-full bg-serenogreen"></span>
+              Moradores
+            </span>
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-black/10 shadow-soft">
+              <span class="h-2 w-2 rounded-full bg-serenoyellow"></span>
+              Afiliados
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft hover:shadow-glow transition" data-aos="zoom-in">
+            <div class="h-12 w-12 rounded-2xl bg-serenogreen/10 grid place-items-center">
+              <i class="bi bi-bag-check text-serenogreen text-2xl"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-bold">Ofertas em estabelecimentos</h3>
+            <p class="mt-2 text-black/70">Descontos e vantagens reais, com regras claras e validade informada.</p>
+          </div>
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft hover:shadow-glow transition" data-aos="zoom-in" data-aos-delay="60">
+            <div class="h-12 w-12 rounded-2xl bg-serenoyellow/15 grid place-items-center">
+              <i class="bi bi-geo-alt text-serenodark text-2xl"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-bold">Mapa e proximidade</h3>
+            <p class="mt-2 text-black/70">Encontre afiliados por categoria e distância (pronto para evoluir).</p>
+          </div>
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft hover:shadow-glow transition" data-aos="zoom-in" data-aos-delay="120">
+            <div class="h-12 w-12 rounded-2xl bg-serenodark/10 grid place-items-center">
+              <i class="bi bi-shield-lock text-serenodark text-2xl"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-bold">Confiabilidade</h3>
+            <p class="mt-2 text-black/70">Curadoria e validação, preservando a reputação do bairro.</p>
+          </div>
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft hover:shadow-glow transition" data-aos="zoom-in" data-aos-delay="180">
+            <div class="h-12 w-12 rounded-2xl bg-serenogreen/10 grid place-items-center">
+              <i class="bi bi-lightning-charge text-serenogreen text-2xl"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-bold">Acesso rápido</h3>
+            <p class="mt-2 text-black/70">CTA direto para WhatsApp, telefone, rotas e site do afiliado.</p>
+          </div>
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft hover:shadow-glow transition" data-aos="zoom-in" data-aos-delay="240">
+            <div class="h-12 w-12 rounded-2xl bg-serenoyellow/15 grid place-items-center">
+              <i class="bi bi-megaphone text-serenodark text-2xl"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-bold">Destaques da semana</h3>
+            <p class="mt-2 text-black/70">Vitrine dinâmica com animações e rotação de destaques.</p>
+          </div>
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft hover:shadow-glow transition" data-aos="zoom-in" data-aos-delay="300">
+            <div class="h-12 w-12 rounded-2xl bg-serenodark/10 grid place-items-center">
+              <i class="bi bi-graph-up-arrow text-serenodark text-2xl"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-bold">Métricas</h3>
+            <p class="mt-2 text-black/70">Relatórios de interesse e contatos (para gestão do programa).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Affiliates -->
+    <section id="afiliados" class="py-16 lg:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up">Estabelecimentos afiliados</h2>
+            <p class="mt-3 text-black/70 max-w-2xl" data-aos="fade-up" data-aos-delay="80">
+              Cards modernos, com destaque visual, categoria e CTA. (Substitua pelos afiliados reais.)
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3" data-aos="fade-up" data-aos-delay="120">
+            <div class="relative">
+              <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-black/40"></i>
+              <input id="searchAff" type="text" placeholder="Buscar afiliado..."
+                class="pl-11 pr-4 py-3 w-72 max-w-[70vw] rounded-2xl border border-black/10 bg-white shadow-soft focus:ring-0" />
+            </div>
+          </div>
+        </div>
+
+        <div id="affGrid" class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <article class="affCard rounded-3xl border border-black/10 bg-white shadow-soft overflow-hidden group"
+                   data-name="Academia Sereno Fit"
+                   data-cat="Academia"
+                   data-title="Sereno Fit"
+                   data-desc="Planos com condição especial para moradores cadastrados."
+                   data-wa="Ol%C3%A1!%20Sou%20morador%20do%20Vale%20do%20Sereno%20e%20quero%20saber%20sobre%20o%20benef%C3%ADcio%20da%20Sereno%20Fit.">
+            <div class="relative h-40 bg-[radial-gradient(circle_at_30%_20%,rgba(8,132,59,.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(198,195,53,.25),transparent_55%)]">
+              <div class="absolute inset-0 opacity-30">
+                <div class="absolute -left-1/2 top-0 h-full w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
+              </div>
+              <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                <span class="text-xs px-3 py-1 rounded-full bg-white/80 border border-black/10">Academia</span>
+                <span class="text-xs px-3 py-1 rounded-full bg-serenogreen/10 text-serenogreen border border-serenogreen/20">Premium</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold">Sereno Fit</h3>
+              <p class="mt-2 text-black/70">Planos com condição especial para moradores cadastrados.</p>
+              <div class="mt-5 flex items-center justify-between">
+                <button class="openAff px-4 py-2 rounded-xl bg-serenodark text-white font-semibold hover:opacity-95 transition">
+                  Ver benefício
+                </button>
+                <a target="_blank" rel="noopener"
+                   href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Sou%20morador%20do%20Vale%20do%20Sereno%20e%20quero%20saber%20sobre%20o%20benef%C3%ADcio%20da%20Sereno%20Fit."
+                   class="inline-flex items-center gap-2 text-serenogreen font-semibold hover:underline">
+                  <i class="bi bi-whatsapp"></i> Contato
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="affCard rounded-3xl border border-black/10 bg-white shadow-soft overflow-hidden group"
+                   data-name="Mercado Vale Prime"
+                   data-cat="Supermercado"
+                   data-title="Vale Prime"
+                   data-desc="Cashback em compras selecionadas e entrega prioritária."
+                   data-wa="Ol%C3%A1!%20Sou%20morador%20do%20Vale%20do%20Sereno%20e%20quero%20saber%20sobre%20o%20benef%C3%ADcio%20do%20Vale%20Prime.">
+            <div class="relative h-40 bg-[radial-gradient(circle_at_20%_10%,rgba(198,195,53,.28),transparent_55%),radial-gradient(circle_at_85%_70%,rgba(8,132,59,.22),transparent_60%)]">
+              <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                <span class="text-xs px-3 py-1 rounded-full bg-white/80 border border-black/10">Supermercado</span>
+                <span class="text-xs px-3 py-1 rounded-full bg-black/5 border border-black/10">Essencial</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold">Vale Prime</h3>
+              <p class="mt-2 text-black/70">Cashback em compras selecionadas e entrega prioritária.</p>
+              <div class="mt-5 flex items-center justify-between">
+                <button class="openAff px-4 py-2 rounded-xl bg-serenodark text-white font-semibold hover:opacity-95 transition">
+                  Ver benefício
+                </button>
+                <a target="_blank" rel="noopener"
+                   href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Sou%20morador%20do%20Vale%20do%20Sereno%20e%20quero%20saber%20sobre%20o%20benef%C3%ADcio%20do%20Vale%20Prime."
+                   class="inline-flex items-center gap-2 text-serenogreen font-semibold hover:underline">
+                  <i class="bi bi-whatsapp"></i> Contato
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="affCard rounded-3xl border border-black/10 bg-white shadow-soft overflow-hidden group"
+                   data-name="Escola Horizonte Sereno"
+                   data-cat="Escola"
+                   data-title="Horizonte Sereno"
+                   data-desc="Condição especial de matrícula e benefícios por indicação."
+                   data-wa="Ol%C3%A1!%20Sou%20morador%20do%20Vale%20do%20Sereno%20e%20quero%20saber%20sobre%20o%20benef%C3%ADcio%20da%20Escola%20Horizonte%20Sereno.">
+            <div class="relative h-40 bg-[radial-gradient(circle_at_20%_20%,rgba(8,132,59,.22),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(43,46,52,.18),transparent_60%)]">
+              <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                <span class="text-xs px-3 py-1 rounded-full bg-white/80 border border-black/10">Escola</span>
+                <span class="text-xs px-3 py-1 rounded-full bg-serenoyellow/20 text-serenodark border border-serenoyellow/30">Destaque</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold">Horizonte Sereno</h3>
+              <p class="mt-2 text-black/70">Condição especial de matrícula e benefícios por indicação.</p>
+              <div class="mt-5 flex items-center justify-between">
+                <button class="openAff px-4 py-2 rounded-xl bg-serenodark text-white font-semibold hover:opacity-95 transition">
+                  Ver benefício
+                </button>
+                <a target="_blank" rel="noopener"
+                   href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Sou%20morador%20do%20Vale%20do%20Sereno%20e%20quero%20saber%20sobre%20o%20benef%C3%ADcio%20da%20Escola%20Horizonte%20Sereno."
+                   class="inline-flex items-center gap-2 text-serenogreen font-semibold hover:underline">
+                  <i class="bi bi-whatsapp"></i> Contato
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-10 rounded-3xl border border-black/10 bg-gradient-to-br from-serenodark to-serenodark/90 text-white p-8 shadow-soft overflow-hidden relative" data-aos="fade-up">
+          <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-serenogreen/25 blur-2xl"></div>
+          <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-serenoyellow/25 blur-2xl"></div>
+          <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <h3 class="text-2xl font-extrabold">Quer afiliar seu estabelecimento?</h3>
+              <p class="mt-2 text-white/80 max-w-2xl">
+                Receba o kit do afiliado, modelo de card premium e orientações de divulgação para o ecossistema do Vale do Sereno.
+              </p>
+            </div>
+            <div class="flex gap-3">
+              <button id="openContactAffiliate" class="px-5 py-3 rounded-2xl bg-white text-serenodark font-semibold hover:opacity-95 transition">
+                Solicitar cadastro
+              </button>
+              <a target="_blank" rel="noopener"
+                 href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20afiliar%20meu%20estabelecimento%20ao%20Programa%20do%20Vale%20do%20Sereno."
+                 class="px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition inline-flex items-center gap-2">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- APP DOWNLOAD (NEW) -->
+    <section id="app" class="py-16 lg:py-24 bg-[radial-gradient(circle_at_20%_0%,rgba(8,132,59,.10),transparent_45%),radial-gradient(circle_at_80%_100%,rgba(198,195,53,.12),transparent_55%)]">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10 items-center">
+          <div class="lg:col-span-6">
+            <div class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 backdrop-blur px-4 py-2 text-sm shadow-soft" data-aos="fade-up">
+              <span class="inline-flex h-2 w-2 rounded-full bg-serenoyellow"></span>
+              Baixe o app • Acesso rápido
+            </div>
+
+            <h2 class="mt-5 text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up" data-aos-delay="60">
+              Baixe nosso aplicativo e tenha o programa na palma da mão.
+            </h2>
+
+            <p class="mt-4 text-black/70 max-w-xl" data-aos="fade-up" data-aos-delay="120">
+              Favoritos, destaques da semana, lista de afiliados e contato com um toque. Ideal para moradores e para quem quer acompanhar novidades do ecossistema.
+            </p>
+
+            <div class="mt-8 grid sm:grid-cols-2 gap-4" data-aos="fade-up" data-aos-delay="180">
+              <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft">
+                <div class="h-12 w-12 rounded-2xl bg-serenogreen/10 grid place-items-center">
+                  <i class="bi bi-bookmark-star text-serenogreen text-2xl"></i>
+                </div>
+                <p class="mt-4 font-bold text-lg">Favoritos & alertas</p>
+                <p class="mt-2 text-black/70 text-sm">Salve afiliados e receba novidades relevantes.</p>
+              </div>
+              <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft">
+                <div class="h-12 w-12 rounded-2xl bg-serenoyellow/20 grid place-items-center">
+                  <i class="bi bi-lightning-charge text-serenodark text-2xl"></i>
+                </div>
+                <p class="mt-4 font-bold text-lg">Acesso instantâneo</p>
+                <p class="mt-2 text-black/70 text-sm">WhatsApp, rota e site do afiliado em segundos.</p>
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center" data-aos="fade-up" data-aos-delay="240">
+              <!-- Troque os links pelos reais -->
+              <a href="#" class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-serenodark text-white font-semibold shadow-soft hover:opacity-95 transition">
+                <i class="bi bi-apple text-xl"></i> App Store
+              </a>
+              <a href="#" class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+                <i class="bi bi-google-play text-xl"></i> Google Play
+              </a>
+
+              <button id="openContactApp" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/80 backdrop-blur border border-black/10 font-semibold shadow-soft hover:bg-white transition">
+                Solicitar link oficial <i class="bi bi-send"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6" data-aos="fade-left" data-aos-delay="120">
+            <div class="relative rounded-3xl border border-black/10 bg-white/80 backdrop-blur shadow-soft overflow-hidden">
+              <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-serenogreen/20 blur-2xl"></div>
+              <div class="absolute -left-24 -bottom-24 h-64 w-64 rounded-full bg-serenoyellow/25 blur-2xl"></div>
+
+              <div class="relative p-6 sm:p-8">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">QR Code</p>
+                  <span class="text-xs px-3 py-1 rounded-full bg-black/5 border border-black/10">Instalação rápida</span>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-6 items-center">
+                  <div class="rounded-2xl border border-black/10 bg-white p-5">
+                    <!-- Substitua por QR real do app -->
+                    <div class="aspect-square rounded-2xl bg-[radial-gradient(circle_at_30%_20%,rgba(8,132,59,.22),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(198,195,53,.24),transparent_55%)] grid place-items-center border border-black/10">
+                      <div class="text-center">
+                        <i class="bi bi-qr-code text-4xl"></i>
+                        <p class="mt-2 text-sm text-black/60">Cole o QR real aqui</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                      <p class="font-semibold">Morador</p>
+                      <p class="text-sm text-black/70 mt-1">Veja benefícios, favoritos e destaques.</p>
+                    </div>
+                    <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                      <p class="font-semibold">Afiliado</p>
+                      <p class="text-sm text-black/70 mt-1">Mais cliques e contatos qualificados.</p>
+                    </div>
+                    <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                      <p class="font-semibold">Associação</p>
+                      <p class="text-sm text-black/70 mt-1">Métricas e gestão transparente do programa.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 rounded-2xl bg-serenodark text-white p-4 relative overflow-hidden">
+                  <div class="absolute inset-0 opacity-30">
+                    <div class="absolute -left-1/2 top-0 h-full w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
+                  </div>
+                  <div class="relative flex items-center justify-between gap-4">
+                    <div>
+                      <p class="font-semibold">Quer o link oficial?</p>
+                      <p class="text-sm text-white/80">Peça por WhatsApp e receba na hora.</p>
+                    </div>
+                    <a target="_blank" rel="noopener"
+                       href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20o%20link%20oficial%20para%20baixar%20o%20aplicativo%20do%20Vale%20do%20Sereno."
+                       class="px-4 py-2 rounded-xl bg-white text-serenodark font-semibold hover:opacity-95 transition inline-flex items-center gap-2">
+                      <i class="bi bi-whatsapp"></i> Pedir
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY (HORIZONTAL APPLE-STYLE) -->
+    <section id="galeria" class="py-16 lg:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Vale do Sereno em imagens</h2>
+            <p class="mt-3 text-black/70 max-w-2xl">
+              Galeria horizontal estilo Apple: a rolagem vertical controla a navegação pelas “chapters” visuais.
+              Substitua pelas fotos oficiais para ficar 100% institucional.
+            </p>
+          </div>
+
+          <div class="flex gap-2">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-black/10 shadow-soft">
+              <span class="h-2 w-2 rounded-full bg-serenogreen"></span>
+              Nova Lima • MG
+            </span>
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-black/10 shadow-soft">
+              <i class="bi bi-mouse text-black/60"></i>
+              Role para avançar
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal scroll stage (pinned) -->
+      <div class="mt-10 hscroll-wrap" id="hscroll">
+        <div class="hscroll-track" id="htrack">
+
+          <!-- PANEL 1 -->
+          <section class="hpanel px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+              <div class="rounded-3xl border border-black/10 bg-white shadow-soft overflow-hidden">
+                <div class="relative">
+                  <img
+                    src="https://gasmig.com.br/wp-content/uploads/2025/01/WhatsApp-Image-2025-01-15-at-15.28.40.webp"
+                    alt="Vista do Vale do Sereno / Vila da Serra - Nova Lima"
+                    class="gallery-img w-full h-[420px] object-cover"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"></div>
+                  <div class="absolute left-6 bottom-6 right-6 flex items-end justify-between gap-4">
+                    <div class="max-w-2xl">
+                      <p class="text-white/80 text-sm">Capítulo 01</p>
+                      <h3 class="text-white text-2xl sm:text-3xl font-extrabold">Panorama: natureza e skyline</h3>
+                      <p class="mt-2 text-white/80">Uma assinatura visual que valoriza o bairro e a experiência premium.</p>
+                    </div>
+                    <span class="hidden sm:inline-flex items-center gap-2 rounded-2xl bg-white/80 backdrop-blur border border-black/10 px-4 py-2 text-sm shadow-soft">
+                      <i class="bi bi-camera text-serenogreen"></i>
+                      Vista panorâmica
+                    </span>
+                  </div>
+                </div>
+
+                <div class="p-6 sm:p-8 grid md:grid-cols-3 gap-4">
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold">Curadoria</p>
+                    <p class="text-sm text-black/70 mt-1">Afiliados verificados e padronização visual.</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold">Acesso</p>
+                    <p class="text-sm text-black/70 mt-1">Vantagens em poucos cliques, sem fricção.</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold">Transparência</p>
+                    <p class="text-sm text-black/70 mt-1">Métricas e governança pela Associação.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- PANEL 2 -->
+          <section class="hpanel px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+              <div class="rounded-3xl border border-black/10 bg-white shadow-soft overflow-hidden">
+                <div class="relative">
+                  <img
+                    src="https://www.viladaserrabh.com.br/wp-content/uploads/2017/02/vila-da-serra-nova-lima.jpg"
+                    alt="Paisagem urbana e verde - região do Vale do Sereno"
+                    class="gallery-img w-full h-[420px] object-cover"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"></div>
+                  <div class="absolute left-6 bottom-6 right-6 flex items-end justify-between gap-4">
+                    <div class="max-w-2xl">
+                      <p class="text-white/80 text-sm">Capítulo 02</p>
+                      <h3 class="text-white text-2xl sm:text-3xl font-extrabold">Verde + urbanismo</h3>
+                      <p class="mt-2 text-white/80">Uma vitrine moderna que conecta conveniência e qualidade de vida.</p>
+                    </div>
+                    <span class="hidden sm:inline-flex items-center gap-2 rounded-2xl bg-white/80 backdrop-blur border border-black/10 px-4 py-2 text-sm shadow-soft">
+                      <i class="bi bi-tree text-serenogreen"></i>
+                      Identidade natural
+                    </span>
+                  </div>
+                </div>
+
+                <div class="p-6 sm:p-8 grid md:grid-cols-3 gap-4">
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold">Descoberta</p>
+                    <p class="text-sm text-black/70 mt-1">Busque por afiliado e por categoria.</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold">Destaques</p>
+                    <p class="text-sm text-black/70 mt-1">Conteúdos rotativos e chamativos.</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold">Conversão</p>
+                    <p class="text-sm text-black/70 mt-1">CTA direto para WhatsApp do afiliado.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- PANEL 3 -->
+          <section class="hpanel px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+              <div class="rounded-3xl border border-black/10 bg-white shadow-soft overflow-hidden">
+                <div class="relative">
+                  <img
+                    src="https://lh5.googleusercontent.com/p/AF1QipNHtIignJpY_hq3g2b0kS9wiyGr2mhlALpAyIgo=w1080-k-no"
+                    alt="Igreja Bom Jesus do Vale - Vale do Sereno"
+                    class="gallery-img w-full h-[420px] object-cover"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"></div>
+                  <div class="absolute left-6 bottom-6 right-6 flex items-end justify-between gap-4">
+                    <div class="max-w-2xl">
+                      <p class="text-white/80 text-sm">Capítulo 03</p>
+                      <h3 class="text-white text-2xl sm:text-3xl font-extrabold">Marcos e referência</h3>
+                      <p class="mt-2 text-white/80">Pontos de interesse e informações úteis para a comunidade.</p>
+                    </div>
+                    <span class="hidden sm:inline-flex items-center gap-2 rounded-2xl bg-white/80 backdrop-blur border border-black/10 px-4 py-2 text-sm shadow-soft">
+                      <i class="bi bi-building text-serenodark"></i>
+                      Bom Jesus do Vale
+                    </span>
+                  </div>
+                </div>
+
+                <div class="p-6 sm:p-8 grid md:grid-cols-2 gap-4">
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold flex items-center gap-2"><i class="bi bi-calendar-week text-serenogreen"></i> Missas — Sábado</p>
+                    <p class="mt-2 text-black/70">18h</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                    <p class="font-semibold flex items-center gap-2"><i class="bi bi-calendar-event text-serenogreen"></i> Missas — Domingo</p>
+                    <p class="mt-2 text-black/70">08h • 10h • 12h • 17h30 • 19h30</p>
+                  </div>
+                </div>
+
+                <div class="px-6 sm:px-8 pb-8">
+                  <a target="_blank" rel="noopener"
+                     href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20informa%C3%A7%C3%B5es%20sobre%20a%20Igreja%20Bom%20Jesus%20do%20Vale%20no%20Vale%20do%20Sereno."
+                     class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+                    <i class="bi bi-whatsapp"></i> Falar por WhatsApp
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          <!-- PANEL 4 (CINEMATIC DARK CHAPTER) -->
+          <section class="hpanel px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+              <div class="rounded-3xl border border-black/10 bg-gradient-to-br from-serenodark to-ink text-white shadow-soft overflow-hidden relative">
+                <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-serenogreen/25 blur-2xl"></div>
+                <div class="absolute -left-24 -bottom-24 h-64 w-64 rounded-full bg-serenoyellow/25 blur-2xl"></div>
+                <div class="relative p-8 sm:p-10">
+                  <p class="text-white/70 text-sm">Capítulo 04</p>
+                  <h3 class="mt-2 text-3xl sm:text-4xl font-extrabold">“Premium” em cada scroll</h3>
+                  <p class="mt-3 text-white/80 max-w-2xl">
+                    Aqui, o tema muda por completo (dark mode), reforçando a sensação cinematográfica e elevando o storytelling.
+                  </p>
+
+                  <div class="mt-8 grid md:grid-cols-3 gap-4">
+                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                      <p class="font-semibold">Mudança total de tema</p>
+                      <p class="text-white/80 mt-1 text-sm">Transição suave entre capítulos.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                      <p class="font-semibold">Pin + horizontal</p>
+                      <p class="text-white/80 mt-1 text-sm">Scroll vertical controla a narrativa.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                      <p class="font-semibold">Profundidade</p>
+                      <p class="text-white/80 mt-1 text-sm">Zoom, blur e parallax calibrados.</p>
+                    </div>
+                  </div>
+
+                  <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                    <a href="#afiliados" class="px-6 py-3 rounded-2xl bg-white text-serenodark font-semibold hover:opacity-95 transition inline-flex items-center justify-center gap-2">
+                      Ver afiliados <i class="bi bi-arrow-right-short text-xl"></i>
+                    </a>
+                    <button id="openContactGallery" class="px-6 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition inline-flex items-center justify-center gap-2">
+                      Solicitar fotos oficiais <i class="bi bi-image"></i>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-8">
+        <p class="text-sm text-black/60">
+          
+        </p>
+      </div>
+    </section>
+
+<!-- IGREJA BOM JESUS DO VALE -->
+<section id="igreja" class="relative py-16 lg:py-24 overflow-hidden">
+
+  <!-- BACKGROUND IGREJA (mesmo padrão do HERO) -->
+  <div class="absolute inset-0 -z-10">
+    <img
+      src="https://lh5.googleusercontent.com/p/AF1QipNHtIignJpY_hq3g2b0kS9wiyGr2mhlALpAyIgo=w1080-k-no"
+      alt="Igreja Bom Jesus do Vale"
+      class="w-full h-full object-cover scale-[0,5] opacity-[1,1] blur-[9px]"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/75 to-white/90"></div>
+  </div>
+
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-12 gap-10 items-center">
+
+      <!-- Texto -->
+      <div class="lg:col-span-6">
+        <div class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 backdrop-blur px-4 py-2 text-sm shadow-soft" data-aos="fade-up">
+          <span class="inline-flex h-2 w-2 rounded-full bg-serenogreen"></span>
+          Vida comunitária • Fé • Encontro
+        </div>
+
+        <h2 class="mt-5 text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up" data-aos-delay="60">
+          Igreja Bom Jesus do Vale
+        </h2>
+
+        <p class="mt-4 text-black/70 max-w-xl" data-aos="fade-up" data-aos-delay="120">
+          Um dos principais pontos de encontro espiritual do Vale do Sereno, a
+          <strong>Igreja Bom Jesus do Vale</strong>
+          é referência de fé, acolhimento e integração da comunidade.
+        </p>
+
+        <!-- Horários -->
+        <div class="mt-8 grid sm:grid-cols-2 gap-4" data-aos="fade-up" data-aos-delay="180">
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft">
+            <div class="flex items-center gap-3">
+              <div class="h-12 w-12 rounded-2xl bg-serenogreen/10 grid place-items-center">
+                <i class="bi bi-calendar-week text-serenogreen text-2xl"></i>
+              </div>
+              <div>
+                <p class="font-bold text-lg">Sábado</p>
+                <p class="text-black/70 text-sm mt-1">Missa às <strong>18h</strong></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-black/10 bg-white/80 backdrop-blur p-6 shadow-soft">
+            <div class="flex items-center gap-3">
+              <div class="h-12 w-12 rounded-2xl bg-serenoyellow/20 grid place-items-center">
+                <i class="bi bi-calendar-event text-serenodark text-2xl"></i>
+              </div>
+              <div>
+                <p class="font-bold text-lg">Domingo</p>
+                <p class="text-black/70 text-sm mt-1">
+                  08h • 10h • 12h<br>
+                  17h30 • 19h30
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-3" data-aos="fade-up" data-aos-delay="240">
+          <a target="_blank" rel="noopener"
+             href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20Igreja%20Bom%20Jesus%20do%20Vale."
+             class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+            <i class="bi bi-whatsapp"></i>
+            Falar com a Paróquia
+          </a>
+
+          <a href="#galeria"
+             class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white/80 backdrop-blur border border-black/10 font-semibold shadow-soft hover:bg-white transition">
+            Ver fotos na galeria
+            <i class="bi bi-image"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card visual -->
+      <div class="lg:col-span-6" data-aos="fade-left" data-aos-delay="120">
+        <div class="relative rounded-3xl border border-black/10 bg-white/80 backdrop-blur shadow-soft overflow-hidden">
+          <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-serenogreen/20 blur-2xl"></div>
+          <div class="absolute -left-24 -bottom-24 h-64 w-64 rounded-full bg-serenoyellow/25 blur-2xl"></div>
+
+          <div class="relative p-8">
+            <p class="text-sm text-black/60">Ponto de referência</p>
+            <h3 class="mt-2 text-2xl font-extrabold">Fé e comunidade</h3>
+
+            <p class="mt-3 text-black/70">
+              Além das celebrações, a igreja exerce papel importante na convivência,
+              ações comunitárias e eventos religiosos do bairro.
+            </p>
+
+            <div class="mt-6 grid gap-3">
+              <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                <p class="font-semibold">Localização</p>
+                <p class="text-sm text-black/70 mt-1">Vale do Sereno • Nova Lima – MG</p>
+              </div>
+              <div class="rounded-2xl border border-black/10 bg-black/5 p-4">
+                <p class="font-semibold">Acesso fácil</p>
+                <p class="text-sm text-black/70 mt-1">Próxima às principais vias do bairro</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</section>
+    
+    <!-- Testimonials -->
+    <section id="depoimentos" class="py-16 lg:py-24 bg-black/[0.02]">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up">Depoimentos</h2>
+          <p class="mt-3 text-black/70 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="80">
+            Prova social do programa. (Substitua por depoimentos reais.)
+          </p>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-3 gap-6">
+          <figure class="rounded-3xl border border-black/10 bg-white p-6 shadow-soft" data-aos="flip-left">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-serenogreen/10 grid place-items-center"><i class="bi bi-person text-serenogreen"></i></div>
+              <div>
+                <p class="font-semibold">Morador(a)</p>
+                <p class="text-xs text-black/60">Vale do Sereno</p>
+              </div>
+            </div>
+            <p class="mt-4 text-black/70">“Ficou muito mais fácil descobrir serviços bons e falar direto com os parceiros.”</p>
+          </figure>
+
+          <figure class="rounded-3xl border border-black/10 bg-white p-6 shadow-soft" data-aos="flip-left" data-aos-delay="80">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-serenoyellow/15 grid place-items-center"><i class="bi bi-shop text-serenodark"></i></div>
+              <div>
+                <p class="font-semibold">Estabelecimento</p>
+                <p class="text-xs text-black/60">Afiliado</p>
+              </div>
+            </div>
+            <p class="mt-4 text-black/70">“O card premium e o WhatsApp direto aumentaram muito os contatos qualificados.”</p>
+          </figure>
+
+          <figure class="rounded-3xl border border-black/10 bg-white p-6 shadow-soft" data-aos="flip-left" data-aos-delay="160">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-serenodark/10 grid place-items-center"><i class="bi bi-shield-check text-serenodark"></i></div>
+              <div>
+                <p class="font-semibold">Associação</p>
+                <p class="text-xs text-black/60">Gestão</p>
+              </div>
+            </div>
+            <p class="mt-4 text-black/70">“Curadoria, transparência e uma apresentação moderna que valoriza o bairro.”</p>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-16 lg:py-24">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" data-aos="fade-up">Perguntas frequentes</h2>
+          <p class="mt-3 text-black/70" data-aos="fade-up" data-aos-delay="80">Tudo o que você precisa para entender o programa.</p>
+        </div>
+
+        <div class="mt-10 grid gap-4">
+          <details class="group rounded-2xl border border-black/10 bg-white p-6 shadow-soft" data-aos="fade-up">
+            <summary class="flex cursor-pointer list-none items-center justify-between font-semibold">
+              Como o morador acessa os benefícios?
+              <i class="bi bi-plus-lg group-open:rotate-45 transition"></i>
+            </summary>
+            <p class="mt-3 text-black/70">
+              O acesso pode ser por link/QR Code oficial e (opcionalmente) credencial. A Associação define as regras de validação.
+            </p>
+          </details>
+
+          <details class="group rounded-2xl border border-black/10 bg-white p-6 shadow-soft" data-aos="fade-up" data-aos-delay="60">
+            <summary class="flex cursor-pointer list-none items-center justify-between font-semibold">
+              Como um estabelecimento se torna afiliado?
+              <i class="bi bi-plus-lg group-open:rotate-45 transition"></i>
+            </summary>
+            <p class="mt-3 text-black/70">
+              Envia cadastro, passa pela curadoria e recebe o kit de comunicação. Em seguida, entra na vitrine do programa.
+            </p>
+          </details>
+
+          <details class="group rounded-2xl border border-black/10 bg-white p-6 shadow-soft" data-aos="fade-up" data-aos-delay="120">
+            <summary class="flex cursor-pointer list-none items-center justify-between font-semibold">
+              É possível ter destaque premium?
+              <i class="bi bi-plus-lg group-open:rotate-45 transition"></i>
+            </summary>
+            <p class="mt-3 text-black/70">
+              Sim. O modelo premium adiciona destaque visual, posição privilegiada e CTAs adicionais, conforme regras do programa.
+            </p>
+          </details>
+        </div>
+
+        <div class="mt-10 text-center" data-aos="fade-up" data-aos-delay="180">
+          <button id="openContactFAQ" class="px-6 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+            Ainda tem dúvidas? Fale conosco
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-black/5">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div class="flex items-center gap-3">
+            <img src="logo_vale.svg" alt="Vale do Sereno" class="h-10 w-auto" />
+            <div>
+              <p class="font-semibold">Vale do Sereno</p>
+              <p class="text-xs text-black/60">Associação & Programa de Afiliados</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <a class="px-4 py-2 rounded-xl hover:bg-black/5 transition" href="#programa">Programa</a>
+            <a class="px-4 py-2 rounded-xl hover:bg-black/5 transition" href="#beneficios">Benefícios</a>
+            <a class="px-4 py-2 rounded-xl hover:bg-black/5 transition" href="#afiliados">Afiliados</a>
+            <a class="px-4 py-2 rounded-xl hover:bg-black/5 transition" href="#app">Aplicativo</a>
+            <a class="px-4 py-2 rounded-xl hover:bg-black/5 transition" href="#galeria">Galeria</a>
+            <a class="px-4 py-2 rounded-xl hover:bg-black/5 transition" href="#faq">FAQ</a>
+          </div>
+
+          <div class="text-sm text-black/60">
+            © <span id="year"></span> Vale do Sereno. Todos os direitos reservados.
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Floating WhatsApp -->
+  <a id="whatsFloat" target="_blank" rel="noopener"
+     href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20o%20Programa%20do%20Vale%20do%20Sereno."
+     class="fixed bottom-6 right-6 z-50 group">
+    <span class="absolute inset-0 rounded-full bg-serenogreen/30 blur-xl"></span>
+    <span class="absolute -inset-2 rounded-full border border-serenogreen/25 animate-pulseRing"></span>
+    <span class="relative inline-flex items-center gap-2 px-5 py-3 rounded-full bg-serenogreen text-white font-extrabold shadow-soft hover:shadow-glow transition">
+      <i class="bi bi-whatsapp text-xl"></i>
+      <span class="hidden sm:inline">Falar no WhatsApp</span>
+    </span>
+  </a>
+
+  <!-- Contact Modal -->
+  <div id="contactModal" class="fixed inset-0 z-[70] hidden">
+    <div id="contactBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+    <div class="relative min-h-full flex items-center justify-center p-4">
+      <div id="contactPanel"
+           class="w-full max-w-xl rounded-3xl border border-white/10 bg-white shadow-soft overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm text-black/60">Contato</p>
+              <h3 class="text-2xl font-extrabold">Fale com a Associação</h3>
+              <p class="mt-2 text-black/70">Envie uma mensagem e receba retorno rápido.</p>
+            </div>
+            <button id="closeContact" class="h-10 w-10 rounded-xl border border-black/10 hover:bg-black/5 transition grid place-items-center">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          <form id="contactForm" class="mt-6 grid gap-3">
+            <div class="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label class="text-sm font-semibold">Nome</label>
+                <input required name="nome" class="mt-1 w-full px-4 py-3 rounded-2xl border border-black/10 bg-white focus:border-serenogreen" placeholder="Seu nome" />
+              </div>
+              <div>
+                <label class="text-sm font-semibold">Telefone</label>
+                <input required name="telefone" class="mt-1 w-full px-4 py-3 rounded-2xl border border-black/10 bg-white focus:border-serenogreen" placeholder="(31) 9xxxx-xxxx" />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm font-semibold">E-mail</label>
+              <input type="email" required name="email" class="mt-1 w-full px-4 py-3 rounded-2xl border border-black/10 bg-white focus:border-serenogreen" placeholder="voce@email.com" />
+            </div>
+
+            <div>
+              <label class="text-sm font-semibold">Assunto</label>
+              <select name="assunto" class="mt-1 w-full px-4 py-3 rounded-2xl border border-black/10 bg-white focus:border-serenogreen">
+                <option>Quero conhecer o programa</option>
+                <option>Quero afiliar meu estabelecimento</option>
+                <option>Sou morador e tenho dúvidas</option>
+                <option>Quero o link do aplicativo</option>
+                <option>Outro</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-sm font-semibold">Mensagem</label>
+              <textarea required name="mensagem" rows="4" class="mt-1 w-full px-4 py-3 rounded-2xl border border-black/10 bg-white focus:border-serenogreen" placeholder="Escreva sua mensagem..."></textarea>
+            </div>
+
+            <div class="mt-2 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+              <p class="text-xs text-black/60">
+                Ao enviar, você concorda com contato por e-mail/WhatsApp para retorno.
+              </p>
+              <div class="flex gap-3">
+                <button type="button" id="sendWhats"
+                  class="px-5 py-3 rounded-2xl bg-serenodark text-white font-semibold hover:opacity-95 transition">
+                  Enviar no WhatsApp
+                </button>
+                <button type="submit"
+                  class="px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+                  Enviar
+                </button>
+              </div>
+            </div>
+
+            <p id="formMsg" class="hidden mt-2 text-sm font-semibold"></p>
+          </form>
+        </div>
+
+        <div class="px-6 sm:px-8 py-5 bg-black/5 border-t border-black/10">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p class="text-sm text-black/70">
+              Prefere algo rápido? Clique e chame direto.
+            </p>
+            <a target="_blank" rel="noopener"
+               href="https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20falar%20com%20a%20Associa%C3%A7%C3%A3o%20do%20Vale%20do%20Sereno."
+               class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition">
+              <i class="bi bi-whatsapp"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Affiliate Benefit Modal -->
+  <div id="affModal" class="fixed inset-0 z-[65] hidden">
+    <div id="affBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div class="relative min-h-full flex items-center justify-center p-4">
+      <div id="affPanel" class="w-full max-w-lg rounded-3xl border border-white/10 bg-white shadow-soft overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm text-black/60">Benefício</p>
+              <h3 id="affTitle" class="text-2xl font-extrabold">Afiliado</h3>
+              <p id="affDesc" class="mt-2 text-black/70">Descrição do benefício.</p>
+            </div>
+            <button id="closeAff" class="h-10 w-10 rounded-xl border border-black/10 hover:bg-black/5 transition grid place-items-center">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          <div class="mt-6 rounded-2xl border border-black/10 bg-black/5 p-4">
+            <p class="text-sm font-semibold">Regras</p>
+            <ul class="mt-2 text-sm text-black/70 grid gap-1">
+              <li>• Válido para moradores cadastrados.</li>
+              <li>• Sujeito a condições do afiliado.</li>
+              <li>• Apresente a credencial/QR Code quando aplicável.</li>
+            </ul>
+          </div>
+
+          <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
+            <button id="closeAff2" class="px-5 py-3 rounded-2xl bg-white border border-black/10 font-semibold hover:bg-black/5 transition">
+              Fechar
+            </button>
+            <a id="affCTA" target="_blank" rel="noopener"
+               href="https://wa.me/5500000000000"
+               class="px-5 py-3 rounded-2xl bg-serenogreen text-white font-semibold shadow-soft hover:shadow-glow transition inline-flex items-center justify-center gap-2">
+              <i class="bi bi-whatsapp"></i> Falar com o afiliado
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis smooth scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+
+<script>
+/* =========================================================
+   BASIC
+========================================================= */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+particlesJS('particles', {
+  particles: {
+    number: { value: 48, density: { enable: true, value_area: 900 } },
+    color: { value: ["#08843b", "#c6c335", "#2b2e34"] },
+    shape: { type: "circle" },
+    opacity: { value: 0.35, random: true },
+    size: { value: 2.6, random: true },
+    line_linked: { enable: true, distance: 130, color: "#2b2e34", opacity: 0.12, width: 1 },
+    move: { enable: true, speed: 1.2 }
+  },
+  interactivity: {
+    detect_on: "canvas",
+    events: {
+      onhover: { enable: true, mode: "repulse" },
+      onclick: { enable: true, mode: "push" }
+    },
+    modes: {
+      repulse: { distance: 120, duration: 0.4 },
+      push: { particles_nb: 2 }
+    }
+  },
+  retina_detect: true
+});
+
+/* =========================================================
+   AOS
+========================================================= */
+AOS.init({
+  once: true,
+  duration: 700,
+  easing: 'ease-out-cubic',
+  disable: () => window.innerWidth < 768
+});
+
+/* =========================================================
+   GSAP + SCROLLTRIGGER
+========================================================= */
+gsap.registerPlugin(ScrollTrigger);
+
+/* =========================================================
+   LENIS
+========================================================= */
+const lenis = new Lenis({
+  lerp: 0.085,
+  smoothWheel: true,
+  wheelMultiplier: 0.9
+});
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => lenis.raf(time * 1000));
+gsap.ticker.lagSmoothing(0);
+
+/* =========================================================
+   SMOOTH ANCHOR SCROLL
+========================================================= */
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const id = link.getAttribute('href');
+    if (!id || id === '#') return;
+    const target = document.querySelector(id);
+    if (!target) return;
+
+    e.preventDefault();
+    lenis.scrollTo(target, {
+      offset: -120,
+      duration: 1.2,
+      easing: (t) => 1 - Math.pow(1 - t, 3)
+    });
+
+    const mm = document.getElementById('mobileMenu');
+    if (mm) mm.classList.add('hidden');
+  });
+});
+
+/* =========================================================
+   TOP PROGRESS BAR
+========================================================= */
+const prog = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  prog.style.width = ((h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100) + '%';
+});
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+const openMobile = document.getElementById('openMobile');
+const mobileMenu = document.getElementById('mobileMenu');
+if (openMobile && mobileMenu) {
+  openMobile.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+}
+
+/* =========================================================
+   CUSTOM CURSOR
+========================================================= */
+const dot = document.querySelector('.cursor-dot');
+const ring = document.querySelector('.cursor-ring');
+let mx = innerWidth / 2, my = innerHeight / 2;
+let rx = mx, ry = my;
+
+window.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  if (dot) { dot.style.left = mx + 'px'; dot.style.top = my + 'px'; }
+});
+
+(function cursorLoop(){
+  rx += (mx - rx) * 0.14;
+  ry += (my - ry) * 0.14;
+  if (ring) { ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; }
+  requestAnimationFrame(cursorLoop);
+})();
+
+document.querySelectorAll('a, button, input, textarea, select, summary').forEach(el => {
+  el.addEventListener('mouseenter', () => { if (ring) ring.style.width = ring.style.height = '54px'; });
+  el.addEventListener('mouseleave', () => { if (ring) ring.style.width = ring.style.height = '36px'; });
+});
+
+/* =========================================================
+   CONTACT MODAL (WORKING)
+========================================================= */
+const contactModal = document.getElementById('contactModal');
+const contactBackdrop = document.getElementById('contactBackdrop');
+const closeContact = document.getElementById('closeContact');
+
+function openContactModal(prefillSubject){
+  if (!contactModal) return;
+  contactModal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  const sel = contactModal.querySelector('select[name="assunto"]');
+  if (sel && prefillSubject) sel.value = prefillSubject;
+  const first = contactModal.querySelector('input[name="nome"]');
+  if (first) first.focus();
+}
+
+function closeContactModal(){
+  if (!contactModal) return;
+  contactModal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+[
+  'openContact','openContactHero','openContactCard','openContactAffiliate','openContactFAQ','openContactMobile','openContactApp','openContactGallery'
+].forEach(id => {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const subjectMap = {
+      openContactAffiliate: 'Quero afiliar meu estabelecimento',
+      openContactApp: 'Quero o link do aplicativo',
+      openContactGallery: 'Outro'
+    };
+    openContactModal(subjectMap[id] || null);
+  });
+});
+
+if (contactBackdrop) contactBackdrop.addEventListener('click', closeContactModal);
+if (closeContact) closeContact.addEventListener('click', closeContactModal);
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeContactModal();
+    closeAffModal();
+  }
+});
+
+/* =========================================================
+   CONTACT FORM (NO BACKEND — UX OK)
+========================================================= */
+const contactForm = document.getElementById('contactForm');
+const formMsg = document.getElementById('formMsg');
+const sendWhats = document.getElementById('sendWhats');
+
+function getFormData(){
+  const fd = new FormData(contactForm);
+  return {
+    nome: (fd.get('nome') || '').toString().trim(),
+    telefone: (fd.get('telefone') || '').toString().trim(),
+    email: (fd.get('email') || '').toString().trim(),
+    assunto: (fd.get('assunto') || '').toString().trim(),
+    mensagem: (fd.get('mensagem') || '').toString().trim()
+  };
+}
+
+function buildWhatsText(d){
+  const parts = [
+    `Olá! Meu nome é ${d.nome}.`,
+    `Telefone: ${d.telefone}`,
+    `E-mail: ${d.email}`,
+    `Assunto: ${d.assunto}`,
+    `Mensagem: ${d.mensagem}`
+  ];
+  return encodeURIComponent(parts.join('\n'));
+}
+
+function showFormMsg(text, ok=true){
+  if (!formMsg) return;
+  formMsg.classList.remove('hidden');
+  formMsg.textContent = text;
+  formMsg.style.color = ok ? '#08843b' : '#b91c1c';
+}
+
+if (sendWhats && contactForm) {
+  sendWhats.addEventListener('click', () => {
+    const d = getFormData();
+    if (!d.nome || !d.telefone || !d.email || !d.mensagem) {
+      showFormMsg('Preencha nome, telefone, e-mail e mensagem para enviar no WhatsApp.', false);
+      return;
+    }
+    const url = `https://wa.me/5500000000000?text=${buildWhatsText(d)}`;
+    window.open(url, '_blank', 'noopener');
+  });
+}
+
+if (contactForm) {
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = getFormData();
+    if (!d.nome || !d.telefone || !d.email || !d.mensagem) {
+      showFormMsg('Por favor, preencha todos os campos obrigatórios.', false);
+      return;
+    }
+
+    // Sem backend: exibimos confirmação e oferecemos WhatsApp
+    showFormMsg('Mensagem pronta. Para envio imediato, clique em “Enviar no WhatsApp”.', true);
+  });
+}
+
+/* =========================================================
+   AFFILIATES SEARCH (WORKING)
+========================================================= */
+const searchAff = document.getElementById('searchAff');
+const affCards = Array.from(document.querySelectorAll('.affCard'));
+
+function filterAff(){
+  if (!searchAff) return;
+  const q = searchAff.value.trim().toLowerCase();
+  affCards.forEach(card => {
+    const name = (card.dataset.name || '').toLowerCase();
+    const cat = (card.dataset.cat || '').toLowerCase();
+    const show = !q || name.includes(q) || cat.includes(q);
+    card.style.display = show ? '' : 'none';
+  });
+}
+if (searchAff) searchAff.addEventListener('input', filterAff);
+
+/* =========================================================
+   AFFILIATES MODAL (WORKING)
+========================================================= */
+const affModal = document.getElementById('affModal');
+const affBackdrop = document.getElementById('affBackdrop');
+const closeAff = document.getElementById('closeAff');
+const closeAff2 = document.getElementById('closeAff2');
+const affTitle = document.getElementById('affTitle');
+const affDesc = document.getElementById('affDesc');
+const affCTA = document.getElementById('affCTA');
+
+function openAffModal(card){
+  if (!affModal || !card) return;
+  const t = card.dataset.title || card.querySelector('h3')?.textContent || 'Afiliado';
+  const d = card.dataset.desc || 'Descrição do benefício.';
+  const wa = card.dataset.wa || encodeURIComponent(`Olá! Quero informações sobre ${t}.`);
+
+  if (affTitle) affTitle.textContent = t;
+  if (affDesc) affDesc.textContent = d;
+  if (affCTA) affCTA.href = `https://wa.me/5500000000000?text=${wa}`;
+
+  affModal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAffModal(){
+  if (!affModal) return;
+  affModal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.openAff').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const card = e.currentTarget.closest('.affCard');
+    openAffModal(card);
+  });
+});
+if (affBackdrop) affBackdrop.addEventListener('click', closeAffModal);
+if (closeAff) closeAff.addEventListener('click', closeAffModal);
+if (closeAff2) closeAff2.addEventListener('click', closeAffModal);
+
+/* =========================================================
+   CINEMATIC HERO (TOTAL)
+========================================================= */
+const heroSection = document.getElementById('hero');
+const heroBg = document.querySelector('.hero-bg');
+const filmScan = document.getElementById('filmScan');
+const heroPanel = document.getElementById('heroPanel');
+const heroTitle = document.getElementById('heroTitle');
+const heroLead = document.getElementById('heroLead');
+
+if (filmScan) {
+  gsap.to(filmScan, {
+    yPercent: 160,
+    repeat: -1,
+    duration: 2.6,
+    ease: 'none'
+  });
+}
+
+if (heroSection && heroBg) {
+  // Parallax + subtle zoom for cinematic feel
+  gsap.to(heroBg, {
+    y: 80,
+    scale: 1.14,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+
+  // Vignette intensity shift
+  gsap.to('.cinema-vignette', {
+    opacity: 1,
+    filter: 'contrast(1.05) saturate(1.05)',
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+}
+
+if (heroPanel && heroSection) {
+  gsap.to(heroPanel, {
+    y: 38,
+    scale: 1.04,
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 0.8
+    }
+  });
+
+  gsap.to(heroPanel, {
+    filter: 'blur(2px)',
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'bottom 55%',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+}
+
+// Intro timeline (cinematic)
+gsap.timeline({ defaults: { ease: 'power3.out' } })
+  .fromTo(heroTitle, { y: 18, opacity: 0, filter: 'blur(6px)' }, { y: 0, opacity: 1, filter: 'blur(0)', duration: 0.9 }, 0.05)
+  .fromTo(heroLead,  { y: 12, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0)', duration: 0.8 }, 0.18)
+  .fromTo('#hero .mt-8', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65 }, 0.32);
+
+/* =========================================================
+   GLOBAL AMBIENCE LAYER
+========================================================= */
+const ambience = document.createElement('div');
+ambience.className = 'pointer-events-none fixed inset-0 -z-10';
+ambience.innerHTML = `
+  <div id="ambLayer" class="absolute inset-0"
+    style="background:
+      radial-gradient(circle at 15% 0%, rgba(8,132,59,.15), transparent 55%),
+      radial-gradient(circle at 85% 100%, rgba(198,195,53,.15), transparent 60%);
+      transition: filter .3s ease;">
+  </div>`;
+document.body.appendChild(ambience);
+
+gsap.to('#ambLayer', {
+  filter: 'saturate(1.1) contrast(1.05)',
+  scrollTrigger: {
+    trigger: 'main',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: true
+  }
+});
+
+/* =========================================================
+   REVEAL CARDS (STORYTELLING)
+========================================================= */
+gsap.utils.toArray('.reveal').forEach(card => {
+  gsap.fromTo(card,
+    { y: 40, opacity: 0, filter: 'blur(3px)' },
+    {
+      y: 0,
+      opacity: 1,
+      filter: 'blur(0)',
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 85%',
+        end: 'top 55%',
+        scrub: 0.5
+      }
+    }
+  );
+});
+
+/* =========================================================
+   PARTICLES PARALLAX
+========================================================= */
+gsap.to('#particles', {
+  y: 70,
+  scale: 1.05,
+  scrollTrigger: {
+    trigger: 'main',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 0.6
+  }
+});
+
+/* =========================================================
+   PIN PROGRAM STICKY (APPLE STYLE)
+========================================================= */
+const progSection = document.getElementById('programa');
+if (progSection) {
+  const sticky = progSection.querySelector('.sticky');
+  if (sticky) {
+    ScrollTrigger.create({
+      trigger: progSection,
+      start: 'top top',
+      end: '+=900',
+      pin: sticky,
+      pinSpacing: true
+    });
+  }
+}
+
+/* =========================================================
+   HORIZONTAL GALLERY (APPLE-STYLE)
+========================================================= */
+const hscroll = document.getElementById('hscroll');
+const htrack = document.getElementById('htrack');
+if (hscroll && htrack) {
+  const panels = gsap.utils.toArray('.hpanel');
+  const total = panels.length;
+
+  // Ensure each panel full viewport width (responsive)
+  function refreshSizes(){
+    panels.forEach(p => p.style.width = window.innerWidth + 'px');
+  }
+  refreshSizes();
+  window.addEventListener('resize', () => {
+    refreshSizes();
+    ScrollTrigger.refresh();
+  });
+
+  gsap.to(htrack, {
+    x: () => -(window.innerWidth * (total - 1)),
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hscroll,
+      start: 'top top',
+      end: () => `+=${window.innerWidth * (total - 1)}`,
+      scrub: 0.85,
+      pin: true,
+      anticipatePin: 1,
+      snap: total > 1 ? 1 / (total - 1) : 1
+    }
+  });
+
+  // Extra depth: images inside panels zoom-in slightly while active
+  gsap.utils.toArray('#htrack .gallery-img').forEach(img => {
+    gsap.fromTo(img,
+      { scale: 1.08, filter: 'blur(2px)' },
+      {
+        scale: 1,
+        filter: 'blur(0)',
+        scrollTrigger: {
+          trigger: img,
+          containerAnimation: ScrollTrigger.getById ? null : null,
+          start: 'left 80%',
+          end: 'left 20%',
+          scrub: true
+        }
+      }
+    );
+  });
+}
+
+/* =========================================================
+   CHAPTERS: TOTAL THEME SHIFTS
+========================================================= */
+const THEMES = {
+  hero:   { bg: '#ffffff', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.78)', mode: 'light' },
+  programa:{ bg: '#ffffff', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.78)', mode: 'light' },
+  beneficios:{ bg: '#f7fbf7', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.80)', mode: 'light' },
+  afiliados:{ bg: '#ffffff', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.78)', mode: 'light' },
+  app:    { bg: '#f8faf8', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.82)', mode: 'light' },
+  galeria:{ bg: '#0b1220', text: '#ffffff', muted: 'rgba(255,255,255,.78)', card: 'rgba(255,255,255,.08)', mode: 'dark' },
+  depoimentos:{ bg: '#ffffff', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.78)', mode: 'light' },
+  faq:    { bg: '#ffffff', text: '#2b2e34', muted: 'rgba(0,0,0,.65)', card: 'rgba(255,255,255,.78)', mode: 'light' }
+};
+
+function applyTheme(id){
+  const t = THEMES[id] || THEMES.hero;
+  document.documentElement.style.setProperty('--bg', t.bg);
+  document.documentElement.style.setProperty('--text', t.text);
+  document.documentElement.style.setProperty('--muted', t.muted);
+  document.documentElement.style.setProperty('--card', t.card);
+  document.body.setAttribute('data-theme', t.mode);
+}
+
+gsap.utils.toArray('section[id]').forEach(section => {
+  ScrollTrigger.create({
+    trigger: section,
+    start: 'top 60%',
+    onEnter: () => applyTheme(section.id),
+    onEnterBack: () => applyTheme(section.id)
+  });
+});
+
+/* =========================================================
+   NAVBAR MICRO BEHAVIOR
+========================================================= */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY || 0;
+  if (nav) nav.style.transform = y > 20 ? 'translateY(-2px)' : 'translateY(0)';
+});
+
+/* =========================================================
+   ACCESSIBILITY – REDUCED MOTION
+========================================================= */
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  try { lenis.destroy(); } catch {}
+  ScrollTrigger.disable();
+}
+</script>
+
+</body>
+</html>

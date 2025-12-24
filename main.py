@@ -193,3 +193,7 @@ async def gerar_ordem_servico(
 @app.get("/site", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("site.html", {"request": request})
+
+@app.get("/vale", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("vale.html", {"request": request})
