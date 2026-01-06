@@ -197,3 +197,7 @@ async def index(request: Request):
 @app.get("/vale", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("vale.html", {"request": request})
+
+@app.get("/core", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("core/index.html", {"request": request})
