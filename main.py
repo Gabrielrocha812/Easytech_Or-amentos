@@ -201,3 +201,15 @@ async def index(request: Request):
 @app.get("/core", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("core/index.html", {"request": request})
+
+@app.get("/core/admin", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("core/admin.html", {"request": request})
+
+@app.get("/core/veiculos", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("core/veiculos.html", {"request": request})
+
+@app.get("/core/baterias", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("core/baterias.html", {"request": request})
