@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Core Veículos & Baterias — Loja automotiva premium</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis (scroll suave) -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.37/bundled/lenis.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            coreRed: '#C4161C',
+            coreRedSoft: '#FDECEC',
+            coreGrayBg: '#F5F5F5',
+            coreText: '#111827',
+            coreMuted: '#6B7280',
+            coreDark: '#050509'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body {
+      scroll-behavior: auto; /* Lenis controla o scroll */
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #fef2f2 0, #f5f5f5 40%, #111827 120%);
+      color: #111827;
+      transition: background 0.7s ease, color 0.7s ease;
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.70));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .nav-blur {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .estoque{
+        z-index: 1;
+    }
+
+    .cor-texto{
+        color: #000;
+    }
+
+    /* =========================
+   HERO BACKGROUND IMAGE
+========================= */
+.hero-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("./hero.png"); /* pode trocar depois */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.10; /* 75% de transparência */
+  z-index: 0;
+}
+
+/* Overlay suave para leitura (Apple style) */
+.hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.85),
+    rgba(255,255,255,0.55),
+    rgba(255,255,255,0.35)
+  );
+  z-index: 1;
+}
+
+/* Conteúdo acima do background */
+.hero-bg > * {
+  position: relative;
+  z-index: 2;
+}
+
+  </style>
+</head>
+
+<body class="text-coreText overflow-x-hidden">
+<!-- LAYER DE FUNDO PREMIUM (glows fixos) -->
+<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+  <!-- Glow vermelho hero -->
+  <div class="hero-glow absolute -top-40 -left-24 w-80 h-80 md:w-[26rem] md:h-[26rem] bg-coreRed/40 rounded-full blur-3xl opacity-70"></div>
+  <!-- Glow escuro scroll -->
+  <div class="scroll-glow absolute top-1/3 -right-40 w-[26rem] h-[26rem] bg-black/70 rounded-full blur-3xl opacity-0"></div>
+  <!-- Glow inferior CTA -->
+  <div class="cta-glow absolute bottom-[-8rem] left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-coreRed/35 rounded-full blur-3xl opacity-0"></div>
+</div>
+
+<!-- PAGE WRAPPER (para ScrollTrigger timeline) -->
+<div class="page-wrapper min-h-screen">
+
+  <!-- HEADER -->
+  <header class="site-header fixed top-0 w-full z-50 transition-all duration-500">
+    <div class="nav-blur bg-white/70 border-b border-white/40">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<a href="./index.html" class="flex items-center gap-2 group">
+  <div class="h-8 w-8 rounded-full bg-coreRed flex items-center justify-center text-xs font-black text-white tracking-tight
+              group-hover:scale-105 transition">
+    CV
+  </div>
+  <div class="leading-tight">
+    <p class="text-xs uppercase tracking-[0.2em] text-coreMuted group-hover:text-coreText transition">
+      Core
+    </p>
+    <h1 class="text-sm md:text-base font-semibold text-coreText">
+      Veículos & Baterias
+    </h1>
+  </div>
+</a>
+
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex gap-8 text-sm font-medium items-center">
+          <a href="./index.html" class="nav-link text-coreMuted hover:text-coreText transition">Início</a>
+          <a href="./veiculos.html" class="nav-link text-coreMuted hover:text-coreText transition">Veículos</a>
+          <a href="./baterias.html" class="nav-link text-coreMuted hover:text-coreText transition">Baterias</a>
+
+          <a href="https://wa.me/553135417780" target="_blank"
+             class="bg-coreRed text-white px-4 py-2 rounded-full hover:bg-red-700 transition text-xs flex items-center gap-2">
+            <span class="inline-flex h-2 w-2 rounded-full bg-white"></span>
+            WhatsApp agora
+          </a>
+        </nav>
+
+        <!-- Mobile button -->
+        <button id="mobile-toggle" class="md:hidden h-10 w-10 flex items-center justify-center rounded-full border border-white/60 bg-white/70">
+          <span class="sr-only">Abrir menu</span>
+          <div class="space-y-1.5">
+            <span class="block w-5 h-0.5 bg-coreText rounded-full"></span>
+            <span class="block w-4 h-0.5 bg-coreText rounded-full"></span>
+            <span class="block w-3 h-0.5 bg-coreText rounded-full"></span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="md:hidden max-h-0 overflow-hidden transition-[max-height] duration-500">
+        <div class="px-6 pb-4 space-y-2 text-sm font-medium bg-white/90 border-t border-white/60">
+          <a href="./index.html" class="block py-2 text-coreMuted hover:text-coreText">Início</a>
+          <a href="./veiculos.html" class="block py-2 text-coreMuted hover:text-coreText">Veículos</a>
+          <a href="./baterias.html" class="block py-2 text-coreMuted hover:text-coreText">Baterias</a>
+          <a href="https://wa.me/553135417780" target="_blank"
+             class="block mt-2 bg-coreRed text-white text-center px-4 py-2 rounded-full hover:bg-red-700">
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO / STORYTELLING -->
+
+ <section id="hero"
+  class="hero-section hero-bg min-h-screen flex items-center pt-24 md:pt-28 relative overflow-hidden">
+   <div class="w-full max-w-7xl mx-auto px-6 grid md:grid-cols-[1.1fr_0.9fr] gap-10 md:gap-16 items-center">
+      <!-- Hero Copy -->
+      <div class="hero-copy space-y-6">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 border border-white/70 shadow-sm">
+          <span class="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+          <span class="text-xs font-medium tracking-[0.18em] uppercase text-coreMuted">
+            Loja automotiva premium em Nova Lima
+          </span>
+        </div>
+
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-tight">
+          <span class="block text-coreText">Veículos com</span>
+          <span class="block text-coreRed">histórico transparente</span>
+          <span class="block text-coreText/90">e baterias com garantia real.</span>
+        </h2>
+
+        <p class="text-coreMuted max-w-xl text-sm md:text-base leading-relaxed">
+          A Core une vitrine de veículos selecionados com uma operação especializada em baterias automotivas.
+          Tudo em um único lugar, com atendimento direto pelo proprietário.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <a href="#veiculos"
+             class="primary-cta bg-coreRed text-white px-6 py-3 rounded-full text-sm md:text-base font-semibold flex items-center gap-2 shadow-lg shadow-coreRed/30 hover:scale-[1.03] hover:shadow-coreRed/50 transition">
+            Ver veículos disponíveis
+            <span class="text-xs">→</span>
+          </a>
+
+          <a href="#baterias"
+             class="secondary-cta border border-coreRed/70 text-coreRed px-6 py-3 rounded-full text-sm md:text-base font-semibold hover:bg-coreRed hover:text-white transition">
+            Baterias com instalação rápida
+          </a>
+        </div>
+
+        <div class="flex flex-wrap gap-6 pt-4 text-xs md:text-sm text-coreMuted/90">
+          <div>
+            <p class="font-semibold text-coreText">+10 anos de experiência</p>
+            <p>em compra, venda e avaliação de veículos.</p>
+          </div>
+          <div>
+            <p class="font-semibold text-coreText">Garantia em baterias</p>
+            <p>instalação na hora e suporte pós-venda.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="hero-visual relative">
+        <!-- Card de info flutuante -->
+        <div class="estoque hidden md:block absolute -top-8 -left-4 glass-card rounded-2xl px-4 py-3 shadow-xl text-xs">
+          <p class="font-semibold text-coreText flex items-center gap-2">
+            <span class="inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+            Estoque revisado
+          </p>
+          <p class="text-coreMuted mt-1">Laudo, procedência e documentação checados.</p>
+        </div>
+
+        <!-- Imagem principal -->
+        <div class="hero-image relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/40 bg-black/90">
+          <img src="/static/hero.png"
+               alt="Core Veículos & Baterias"
+               class="w-full h-[280px] md:h-[380px] lg:h-[420px] object-cover">
+          <!-- Overlay gradiente -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent mix-blend-multiply pointer-events-none"></div>
+
+          <!-- Overlay de texto sobre a imagem -->
+          <div class="absolute inset-x-0 bottom-0 p-5 md:p-6 flex justify-between items-end text-white text-xs md:text-sm">
+            <div>
+              <p class="uppercase tracking-[0.22em] text-white/60 text-[10px] md:text-[11px]">Core Experience</p>
+              <p class="font-medium mt-1">Seleção de veículos & linha completa de baterias</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[10px] md:text-[11px] text-white/60">Atendimento sob medida</p>
+              <p class="font-semibold">Nova Lima e região</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card menor à direita -->
+        <div class="floating-card absolute -bottom-8 right-0 md:-right-8 glass-card rounded-2xl px-4 py-3 shadow-xl flex items-center gap-3 w-[260px]">
+          <div class="h-8 w-8 rounded-full bg-coreRed/10 flex items-center justify-center text-coreRed text-xs font-semibold">
+            24h
+          </div>
+          <div class="text-xs">
+            <p class="font-semibold text-coreText">Chamada rápida para baterias</p>
+            <p class="text-coreMuted mt-0.5">Fale agora pelo WhatsApp e consulte a bateria ideal.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: STORY / DIFERENCIAIS -->
+  <section id="sobre" class="relative py-20 md:py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
+        <!-- Texto -->
+        <div class="story-text space-y-6">
+          <h3 class="text-2xl md:text-3xl font-semibold tracking-tight">
+            Uma loja que pensa <span class="text-coreRed">no longo prazo</span> com você.
+          </h3>
+          <p class="text-coreMuted text-sm md:text-base leading-relaxed">
+            Na Core, cada veículo passa por uma curadoria cuidadosa, de procedência a manutenção.
+            E o mesmo padrão se aplica à linha de baterias: nada de “solução rápida” que te deixa na mão.
+          </p>
+
+          <div class="grid sm:grid-cols-2 gap-4 text-xs md:text-sm">
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-semibold text-coreText mb-1">Veículos selecionados</p>
+              <p class="text-coreMuted">Laudo, histórico e documentação avaliados antes de entrar no estoque.</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-semibold text-coreText mb-1">Baterias com garantia</p>
+              <p class="text-coreMuted">Instalação na hora, modelos para linha leve e utilitários.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards “scroll storytelling” -->
+        <div class="grid md:grid-cols-3 gap-4 md:gap-5 text-xs md:text-sm">
+          <div class="feature-card glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between min-h-[160px]">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.22em] text-coreMuted mb-2">Etapa 01</p>
+              <p class="font-semibold text-coreText mb-2">Recebimento e avaliação</p>
+              <p class="text-coreMuted">Primeiro contato com o veículo, avaliação de estrutura, motor e interior.</p>
+            </div>
+            <p class="mt-3 text-[11px] text-coreMuted">Transparência desde o primeiro olhar.</p>
+          </div>
+
+          <div class="feature-card glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between min-h-[160px]">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.22em] text-coreMuted mb-2">Etapa 02</p>
+              <p class="font-semibold text-coreText mb-2">Curadoria & revisão</p>
+              <p class="text-coreMuted">Itens de segurança checados, revisão preventiva e alinhamento com laudo.</p>
+            </div>
+            <p class="mt-3 text-[11px] text-coreMuted">O que você não vê, a gente confere.</p>
+          </div>
+
+          <div class="feature-card glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between min-h-[160px]">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.22em] text-coreMuted mb-2">Etapa 03</p>
+              <p class="font-semibold text-coreText mb-2">Entrega & pós-venda</p>
+              <p class="text-coreMuted">Acompanhamento no pós-compra e suporte em baterias e manutenção.</p>
+            </div>
+            <p class="mt-3 text-[11px] text-coreMuted">Relação para além da chave na mão.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: VEÍCULOS & BATERIAS (split storytelling) -->
+  <section id="veiculos" class="relative py-20 md:py-24">
+    <div class="max-w-7xl mx-auto px-6 space-y-10">
+      <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.22em] text-coreMuted mb-2">Core Veículos</p>
+          <h3 class="text-2xl md:text-3xl font-semibold tracking-tight">
+            Um estoque compacto, <span class="text-coreRed">por escolha.</span>
+          </h3>
+          <p class="text-coreMuted text-sm md:text-base max-w-xl mt-3">
+            Nada de dezenas de carros sem histórico. Trabalhamos com um volume enxuto, com foco em qualidade e
+            alinhamento com o seu perfil de uso.
+          </p>
+        </div>
+
+        <a href="./veiculos.html"
+           class="inline-flex items-center gap-2 text-sm font-medium text-coreRed hover:text-red-700">
+          Ver página completa de veículos
+          <span class="text-xs">↗</span>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 md:gap-6 text-xs md:text-sm">
+        <div class="vehicle-card glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between">
+          <div>
+            <p class="text-coreMuted uppercase tracking-[0.18em] text-[10px] mb-2">Curadoria</p>
+            <p class="font-semibold text-coreText mb-2">Carros para uso real</p>
+            <p class="text-coreMuted">
+              Seleção voltada para uso diário, viagens e rotina urbana. Nada de surpresa escondida.
+            </p>
+          </div>
+          <p class="mt-4 text-[11px] text-coreMuted">Histórico alinhado ao que você precisa, não ao anúncio.</p>
+        </div>
+
+        <div class="vehicle-card glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between">
+          <div>
+            <p class="text-coreMuted uppercase tracking-[0.18em] text-[10px] mb-2">Transparência</p>
+            <p class="font-semibold text-coreText mb-2">Laudo & documentação</p>
+            <p class="text-coreMuted">
+              Informações claras sobre laudo, multas, IPVA e manutenção para você decidir com segurança.
+            </p>
+          </div>
+          <p class="mt-4 text-[11px] text-coreMuted">Você sabe exatamente o que está levando.</p>
+        </div>
+
+        <div class="vehicle-card glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between">
+          <div>
+            <p class="text-coreMuted uppercase tracking-[0.18em] text-[10px] mb-2">Negócio</p>
+            <p class="font-semibold text-coreText mb-2">Compra, venda e troca</p>
+            <p class="text-coreMuted">
+              Avaliação justa do seu veículo usado, opções de troca e facilidades para fechar o negócio.
+            </p>
+          </div>
+          <p class="mt-4 text-[11px] text-coreMuted">Negociação direta, sem rodeios.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BATERIAS -->
+  <section id="baterias" class="relative py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-6 space-y-8">
+      <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.22em] text-coreMuted mb-2">Core Baterias</p>
+          <h3 class="text-2xl md:text-3xl font-semibold tracking-tight">
+            Baterias para deixar seu dia <span class="text-coreRed">mais simples</span>.
+          </h3>
+          <p class="text-coreMuted text-sm md:text-base max-w-xl mt-3">
+            Linha completa para carros de passeio e utilitários, com instalação rápida e garantia de fábrica.
+          </p>
+        </div>
+
+        <a href="./baterias.html"
+           class="inline-flex items-center gap-2 text-sm font-medium text-coreRed hover:text-red-700">
+          Ver tabela de modelos e preços
+          <span class="text-xs">↗</span>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-[1.2fr_0.8fr] gap-8 md:gap-10 text-xs md:text-sm items-center">
+        <div class="battery-grid grid sm:grid-cols-3 gap-4 md:gap-5">
+          <div class="glass-card rounded-2xl p-4 flex flex-col justify-between min-h-[140px]">
+            <div>
+              <p class="font-semibold text-coreText mb-1">Instalação rápida</p>
+              <p class="text-coreMuted">Troca feita na hora, com teste e conferência de carga.</p>
+            </div>
+            <p class="mt-3 text-[11px] text-coreMuted">Você sai rodando com segurança.</p>
+          </div>
+          <div class="glass-card rounded-2xl p-4 flex flex-col justify-between min-h-[140px]">
+            <div>
+              <p class="font-semibold text-coreText mb-1">Modelos variados</p>
+              <p class="text-coreMuted">Opções para diferentes amperagens e categorias de veículo.</p>
+            </div>
+            <p class="mt-3 text-[11px] text-coreMuted">A bateria certa para o seu uso.</p>
+          </div>
+          <div class="glass-card rounded-2xl p-4 flex flex-col justify-between min-h-[140px]">
+            <div>
+              <p class="font-semibold text-coreText mb-1">Garantia real</p>
+              <p class="text-coreMuted">Orientação sobre garantia e suporte em caso de imprevistos.</p>
+            </div>
+            <p class="mt-3 text-[11px] text-coreMuted">Sem pegadinhas na hora que você mais precisa.</p>
+          </div>
+        </div>
+
+        <!-- Bloco “Apple style” focado em ação -->
+        <div class="glass-card rounded-[1.75rem] p-5 md:p-6 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-coreRed/10 via-transparent to-black/70 opacity-80 pointer-events-none"></div>
+          <div class="relative space-y-3 text-white">
+            <p class="text-[11px] uppercase tracking-[0.26em]  cor-texto">Precisa resolver hoje?</p>
+            <p class="text-lg md:text-xl font-semibold leading-snug cor-texto">
+              Fale agora pelo WhatsApp e veja modelos de baterias disponíveis para o seu carro.
+            </p>
+            <p class="text-sm  cor-texto">
+              Envie o modelo do veículo e, se puder, uma foto da bateria atual. A gente faz o resto.
+            </p>
+            <a href="https://wa.me/553135417780" target="_blank"
+               class="inline-flex items-center justify-center gap-2 bg-white text-coreRed px-5 py-3 rounded-full font-semibold text-sm hover:scale-[1.03] transition shadow-lg shadow-black/40">
+              Atendimento imediato via WhatsApp
+              <span class="text-xs">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section id="contato" class="cta-section relative py-20 md:py-24">
+    <div class="max-w-5xl mx-auto px-6 text-center text-white">
+      <p class="text-[11px] uppercase tracking-[0.26em] text-white/70 mb-3">Core Veículos & Baterias</p>
+      <h3 class="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
+        Vamos falar sobre o seu próximo carro<br class="hidden md:block">
+        ou a bateria ideal para o seu dia a dia?
+      </h3>
+      <p class="text-sm md:text-base text-white/80 max-w-2xl mx-auto mb-8">
+        Mande uma mensagem, um print de um carro que você gostou ou a situação da sua bateria.
+        A conversa começa simples e, a partir daí, a gente te ajuda a decidir com calma.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="https://wa.me/553135417780" target="_blank"
+           class="inline-flex items-center justify-center gap-2 bg-white text-coreRed px-8 py-3 rounded-full font-semibold text-sm md:text-base hover:scale-[1.05] transition shadow-xl shadow-black/50">
+          Falar agora pelo WhatsApp
+        </a>
+      </div>
+
+      <p class="mt-6 text-[11px] text-white/60">Atendimento em Nova Lima e região • Horários flexíveis sob demanda</p>
+    </div>
+  </section>
+
+  <!-- FOOTER SIMPLES -->
+  <footer class="border-t border-white/10 bg-black/80 text-white/60 text-xs">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>© <span id="year"></span> Core Veículos & Baterias. Todos os direitos reservados.</p>
+      <p class="text-[11px]">Compra, venda, troca e linha completa de baterias automotivas.</p>
+    </div>
+  </footer>
+
+</div> <!-- /page-wrapper -->
+
+<!-- SCRIPTS: LENIS + GSAP -->
+<script>
+  // Ano dinâmico
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Menu mobile
+  const mobileToggle = document.getElementById('mobile-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  let mobileOpen = false;
+
+  mobileToggle.addEventListener('click', () => {
+    mobileOpen = !mobileOpen;
+    mobileMenu.style.maxHeight = mobileOpen ? mobileMenu.scrollHeight + 'px' : '0px';
+  });
+
+  // GSAP + ScrollTrigger + Lenis
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Lenis: scroll ultra suave
+  const lenis = new Lenis({
+    duration: 1.25,
+    smoothWheel: true,
+    smoothTouch: false
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // Manter ScrollTrigger sincronizado com Lenis
+  lenis.on('scroll', () => {
+    ScrollTrigger.update();
+  });
+
+  // Header animado (entrada + mudança com scroll)
+  gsap.from(".site-header", {
+    y: -80,
+    opacity: 0,
+    duration: 1.1,
+    ease: "power3.out"
+  });
+
+  ScrollTrigger.create({
+    trigger: ".hero-section",
+    start: "top top",
+    end: "bottom top",
+    onUpdate: (self) => {
+      const header = document.querySelector(".site-header");
+      if (self.progress > 0.2) {
+        header.classList.add("shadow-lg");
+      } else {
+        header.classList.remove("shadow-lg");
+      }
+    }
+  });
+
+  // MASTER TIMELINE CONTROLADA PELO SCROLL (storytelling)
+  const master = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".page-wrapper",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true
+    }
+  });
+
+  // Fase 1: Hero — zoom/blur suave na imagem + leve parallax do texto
+  master
+    .to(".hero-image", {
+      scale: 1.05,
+      filter: "blur(2px)",
+      y: 40,
+      ease: "none"
+    }, 0)
+    .to(".hero-copy", {
+      y: -30,
+      ease: "none"
+    }, 0)
+    .to(".hero-glow", {
+      opacity: 0.5,
+      scale: 1.1,
+      ease: "none"
+    }, 0);
+
+  // Fase 2: transição de cor de fundo e glow lateral
+  master
+    .to("body", {
+      background: "radial-gradient(circle at top left, #111827 0, #020617 45%, #000000 100%)",
+      color: "#F9FAFB",
+      ease: "none"
+    }, 0.28)
+    .to(".scroll-glow", {
+      opacity: 0.8,
+      scale: 1.2,
+      ease: "none"
+    }, 0.28);
+
+  // Fase 3: features/story — cards sobem com leve zoom
+  master
+    .from(".feature-card", {
+      y: 80,
+      opacity: 0,
+      scale: 0.95,
+      stagger: 0.12,
+      ease: "power2.out"
+    }, 0.32);
+
+  // Fase 4: veículos + baterias — cards aproximam e ganham destaque
+  master
+    .from(".vehicle-card", {
+      y: 90,
+      opacity: 0,
+      stagger: 0.1,
+      ease: "power2.out"
+    }, 0.45)
+    .from(".battery-grid .glass-card", {
+      y: 80,
+      opacity: 0,
+      stagger: 0.08,
+      ease: "power2.out"
+    }, 0.52);
+
+  // Fase 5: CTA — aparece com zoom e glow
+  master
+    .to(".cta-glow", {
+      opacity: 0.9,
+      scale: 1.2,
+      ease: "none"
+    }, 0.68)
+    .from(".cta-section", {
+      y: 140,
+      opacity: 0,
+      scale: 0.96,
+      ease: "power2.out"
+    }, 0.68)
+    .to(".cta-section", {
+      filter: "blur(0px)",
+      ease: "none"
+    }, 0.72);
+
+  // Animações de entrada independentes para deixar tudo mais “vivo” (Apple vibes)
+  gsap.from(".hero-copy > *", {
+    y: 40,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out",
+    stagger: 0.08,
+    delay: 0.1
+  });
+
+  gsap.from(".hero-image", {
+    y: 60,
+    opacity: 0,
+    duration: 1.1,
+    ease: "power3.out",
+    delay: 0.2
+  });
+
+  gsap.from(".floating-card", {
+    y: 30,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out",
+    delay: 0.4
+  });
+
+  // Parallax leve das cards no scroll (efeito Tesla/Stripe style)
+  const floatElements = document.querySelectorAll(".glass-card");
+  floatElements.forEach((el, i) => {
+    gsap.to(el, {
+      y: i % 2 === 0 ? -18 : -8,
+      duration: 2,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+      delay: i * 0.18
+    });
+  });
+</script>
+
+</body>
+</html>

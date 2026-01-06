@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — Core Veículos & Baterias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            coreRed: '#C4161C',
+            coreGrayBg: '#F5F5F5',
+            coreText: '#374151',
+            coreMuted: '#6B7280'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-card{
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .input{
+      width:100%;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.15);
+      border-radius:.75rem;
+      padding:.75rem;
+      font-size:.875rem;
+    }
+  </style>
+</head>
+
+<body class="bg-coreGrayBg text-coreText min-h-screen">
+
+<!-- HEADER -->
+<header class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur border-b border-white/40">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="./index.html" class="flex items-center gap-2">
+      <div class="h-8 w-8 rounded-full bg-coreRed text-white flex items-center justify-center text-xs font-black">
+        CV
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-[0.2em] text-coreMuted">Core</p>
+        <p class="text-sm font-semibold">Veículos & Baterias</p>
+      </div>
+    </a>
+
+    <a href="./index.html" class="text-sm text-coreMuted hover:text-coreText">
+      Voltar ao site
+    </a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-12">
+
+  <!-- TÍTULO -->
+  <div>
+    <p class="text-xs uppercase tracking-[0.22em] text-coreMuted mb-2">Administração</p>
+    <h1 class="text-3xl font-bold">Painel Admin</h1>
+  </div>
+
+  <!-- TABS -->
+  <div class="flex gap-6 border-b border-black/10">
+    <button id="tabBtnVeiculos"
+      onclick="showTab('veiculos')"
+      class="px-5 py-3 text-sm font-semibold border-b-2 border-coreRed text-coreRed">
+      Veículos
+    </button>
+
+    <button id="tabBtnBaterias"
+      onclick="showTab('baterias')"
+      class="px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-coreMuted hover:text-coreText">
+      Baterias
+    </button>
+  </div>
+
+  <!-- ================= VEÍCULOS ================= -->
+  <section id="tab-veiculos" class="space-y-8">
+
+    <form onsubmit="salvarVeiculo(event)"
+      class="grid md:grid-cols-5 gap-4 glass-card p-6 rounded-2xl">
+
+      <input id="v-nome"   class="input" placeholder="Nome do veículo" required>
+      <input id="v-marca"  class="input" placeholder="Marca" required>
+      <input id="v-ano"    class="input" type="number" placeholder="Ano" required>
+      <input id="v-preco"  class="input" type="number" placeholder="Preço" required>
+      <input id="v-img"    class="input md:col-span-5" placeholder="URL da imagem" required>
+
+      <button class="md:col-span-5 bg-coreRed text-white py-3 rounded-xl font-semibold hover:bg-red-700">
+        Salvar veículo
+      </button>
+    </form>
+
+    <div id="listaVeiculos" class="space-y-3"></div>
+  </section>
+
+  <!-- ================= BATERIAS ================= -->
+  <section id="tab-baterias" class="space-y-8 hidden">
+
+    <form onsubmit="salvarBateria(event)"
+      class="grid md:grid-cols-4 gap-4 glass-card p-6 rounded-2xl">
+
+      <input id="b-modelo"    class="input" placeholder="Modelo" required>
+      <input id="b-amperagem" class="input" placeholder="Amperagem (ex: 60Ah)" required>
+      <input id="b-preco"     class="input" type="number" placeholder="Preço" required>
+      <input id="b-garantia"  class="input" placeholder="Garantia" required>
+
+      <button class="md:col-span-4 bg-coreRed text-white py-3 rounded-xl font-semibold hover:bg-red-700">
+        Salvar bateria
+      </button>
+    </form>
+
+    <div id="listaBaterias" class="space-y-3"></div>
+  </section>
+
+</main>
+
+<!-- SCRIPT -->
+<script>
+const $   = id => document.getElementById(id);
+const get = k  => JSON.parse(localStorage.getItem(k)) || [];
+const set = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+const uid = () => Date.now();
+
+let editVeiculoId = null;
+let editBateriaId = null;
+
+/* TABS */
+function showTab(tab){
+  const isVeiculos = tab === 'veiculos';
+
+  // conteúdo
+  $('tab-veiculos').classList.toggle('hidden', !isVeiculos);
+  $('tab-baterias').classList.toggle('hidden', isVeiculos);
+
+  // classes base
+  const base =
+    'px-5 py-3 text-sm font-semibold border-b-2';
+  const active =
+    base + ' border-coreRed text-coreRed';
+  const inactive =
+    base + ' border-transparent text-coreMuted hover:text-coreText';
+
+  // aplica estado
+  $('tabBtnVeiculos').className = isVeiculos ? active   : inactive;
+  $('tabBtnBaterias').className = isVeiculos ? inactive : active;
+}
+
+/* VEÍCULOS */
+function salvarVeiculo(e){
+  e.preventDefault();
+  const lista = get('veiculos');
+
+  const data = {
+    id:    editVeiculoId || uid(),
+    nome:  $('v-nome').value,
+    marca: $('v-marca').value,
+    ano:   Number($('v-ano').value),
+    preco: Number($('v-preco').value),
+    img:   $('v-img').value
+  };
+
+  const novaLista = editVeiculoId
+    ? lista.map(v => v.id === editVeiculoId ? data : v)
+    : [...lista, data];
+
+  set('veiculos', novaLista);
+  editVeiculoId = null;
+  e.target.reset();
+  renderVeiculos();
+}
+
+function renderVeiculos(){
+  const lista = get('veiculos');
+  const container = $('listaVeiculos');
+
+  container.innerHTML = lista.map(v => `
+    <div class="glass-card p-4 rounded-xl flex justify-between items-center">
+      <div>
+        <p class="font-semibold">${v.nome}</p>
+        <p class="text-xs text-coreMuted">${v.ano} • ${v.marca}</p>
+      </div>
+      <div class="flex gap-4 text-sm">
+        <button onclick="editarVeiculo(${v.id})" class="text-coreRed">Editar</button>
+        <button onclick="removerVeiculo(${v.id})" class="text-red-600">Remover</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editarVeiculo(id){
+  const v = get('veiculos').find(item => item.id === id);
+  if(!v) return;
+
+  editVeiculoId = id;
+  $('v-nome').value  = v.nome;
+  $('v-marca').value = v.marca;
+  $('v-ano').value   = v.ano;
+  $('v-preco').value = v.preco;
+  $('v-img').value   = v.img;
+}
+
+function removerVeiculo(id){
+  if(!confirm('Remover veículo?')) return;
+  set('veiculos', get('veiculos').filter(v => v.id !== id));
+  renderVeiculos();
+}
+
+/* BATERIAS */
+function salvarBateria(e){
+  e.preventDefault();
+  const lista = get('baterias');
+
+  const data = {
+    id:        editBateriaId || uid(),
+    modelo:    $('b-modelo').value,
+    amperagem: $('b-amperagem').value,
+    preco:     Number($('b-preco').value),
+    garantia:  $('b-garantia').value
+  };
+
+  const novaLista = editBateriaId
+    ? lista.map(b => b.id === editBateriaId ? data : b)
+    : [...lista, data];
+
+  set('baterias', novaLista);
+  editBateriaId = null;
+  e.target.reset();
+  renderBaterias();
+}
+
+function renderBaterias(){
+  const lista = get('baterias');
+  const container = $('listaBaterias');
+
+  container.innerHTML = lista.map(b => `
+    <div class="glass-card p-4 rounded-xl flex justify-between items-center">
+      <div>
+        <p class="font-semibold">${b.modelo}</p>
+        <p class="text-xs text-coreMuted">${b.amperagem} • ${b.garantia}</p>
+      </div>
+      <div class="flex gap-4 text-sm">
+        <button onclick="editarBateria(${b.id})" class="text-coreRed">Editar</button>
+        <button onclick="removerBateria(${b.id})" class="text-red-600">Remover</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editarBateria(id){
+  const b = get('baterias').find(item => item.id === id);
+  if(!b) return;
+
+  editBateriaId = id;
+  $('b-modelo').value    = b.modelo;
+  $('b-amperagem').value = b.amperagem;
+  $('b-preco').value     = b.preco;
+  $('b-garantia').value  = b.garantia;
+}
+
+function removerBateria(id){
+  if(!confirm('Remover bateria?')) return;
+  set('baterias', get('baterias').filter(b => b.id !== id));
+  renderBaterias();
+}
+
+/* INIT */
+renderVeiculos();
+renderBaterias();
+</script>
+
+</body>
+</html>
