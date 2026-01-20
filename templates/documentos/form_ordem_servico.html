@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ordem de Serviço</title>
+  <style>
+    :root {
+      --primary: #5e35b1;
+      --primary-dark: #4527a0;
+      --danger: #d32f2f;
+      --gray: #777;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      color: #333;
+      margin: 0;
+      padding: 30px;
+      max-width: 800px;
+      margin-inline: auto;
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 25px;
+      font-size: 1.8em;
+      text-align: center;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 12px;
+      display: block;
+      font-size: 0.95em;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      margin-top: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    .item-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      margin-top: 10px;
+    }
+
+    .item-row input {
+      flex: 1;
+    }
+
+    .btn-secondary {
+      background: var(--gray);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #b71c1c;
+    }
+
+    /* ---------- Responsividade para iPhone ---------- */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+
+      input, textarea {
+        font-size: 14px;
+        padding: 9px;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 11px;
+      }
+
+      .item-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .item-row input {
+        width: 100%;
+      }
+
+      .item-row button {
+        width: 100%;
+      }
+    }
+
+    /* iPhones pequenos (≤430px) */
+    @media (max-width: 430px) {
+      body {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+      }
+
+      label {
+        font-size: 0.9em;
+      }
+
+      input, textarea {
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Ordem de Serviço</h1>
+
+  <form action="/gerar-ordem-servico" method="post">
+
+  <label>Nº da OS:</label>
+  <input type="text" name="numero_os" required>
+
+  <label>Data de Abertura:</label>
+  <input type="text" name="data_abertura" id="data_abertura" required>
+
+    <label>Cliente:</label>
+    <input type="text" name="cliente" required>
+
+    <label>Endereço:</label>
+    <input type="text" name="endereco" required>
+
+    <label>Data de Execução:</label>
+    <input type="text" name="data_execucao" id="data_execucao" required>
+
+    <label>Técnico Responsável:</label>
+    <input type="text" name="tecnico" required>
+
+    <label>Descrição do Serviço:</label>
+    <textarea name="descricao_servico" rows="4" required></textarea>
+
+
+    <button type="submit">Gerar PDF</button>
+  </form>
+
+  <script>
+    window.onload = function() {
+      document.getElementById('data_abertura').value = new Date().toLocaleDateString('pt-BR');
+      document.getElementById('data_execucao').value = new Date().toLocaleDateString('pt-BR');
+    }
+
+    function adicionarItem() {
+      const div = document.createElement('div');
+      div.className = 'item-row';
+      div.innerHTML = `
+        <input type="text" name="materiais_usados" placeholder="Material" required>
+        <input type="number" name="valores" step="0.01" min="0" placeholder="Valor R$" required>
+        <button type="button" class="btn-danger" onclick="removerItem(this)">Remover</button>`;
+      document.getElementById('materiais').appendChild(div);
+    }
+
+    function removerItem(btn) {
+      const rows = document.querySelectorAll('.item-row');
+      if (rows.length > 1) btn.parentElement.remove();
+    }
+  </script>
+</body>
+</html>

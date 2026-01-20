@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- KPIs -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+  <!-- Abertos -->
+  <div class="rounded-2xl shadow-sm bg-gradient-to-br from-easytech-primary to-purple-700 text-white">
+    <div class="p-6">
+      <h6 class="text-sm opacity-90">Orçamentos Abertos</h6>
+      <h2 class="text-3xl font-bold mt-1">{{ abertos }}</h2>
+    </div>
+  </div>
+
+  <!-- Fechados -->
+  <div class="rounded-2xl shadow-sm bg-gradient-to-br from-green-500 to-green-600 text-white">
+    <div class="p-6">
+      <h6 class="text-sm opacity-90">Orçamentos Fechados</h6>
+      <h2 class="text-3xl font-bold mt-1">{{ fechados }}</h2>
+    </div>
+  </div>
+
+  <!-- Cancelados -->
+  <div class="rounded-2xl shadow-sm bg-gradient-to-br from-gray-500 to-gray-600 text-white">
+    <div class="p-6">
+      <h6 class="text-sm opacity-90">Orçamentos Cancelados</h6>
+      <h2 class="text-3xl font-bold mt-1">{{ cancelados }}</h2>
+    </div>
+  </div>
+
+</div>
+
+<!-- TABELA -->
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between px-6 py-4 border-b">
+    <div class="flex items-center text-gray-700 font-semibold">
+      <i class="bi bi-list-ul mr-2 text-easytech-primary"></i>
+      Últimos Orçamentos
+    </div>
+
+    <a href="/orcamentos/novo"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-easytech-primary text-white text-sm font-medium hover:bg-easytech-dark transition">
+      <i class="bi bi-plus-circle"></i>
+      Novo
+    </a>
+  </div>
+
+  <!-- Tabela -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="bg-purple-50 text-gray-700">
+        <tr>
+          <th class="px-6 py-3 text-left font-semibold">#</th>
+          <th class="px-6 py-3 text-left font-semibold">Cliente</th>
+          <th class="px-6 py-3 text-left font-semibold">Descrição</th>
+          <th class="px-6 py-3 text-left font-semibold">Valor Total</th>
+          <th class="px-6 py-3 text-left font-semibold">Status</th>
+          <th class="px-6 py-3 text-left font-semibold">Criado em</th>
+          <th class="px-6 py-3 text-left font-semibold">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y">
+
+        {% for o in orcamentos %}
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-3 text-gray-500">{{ o.id }}</td>
+          <td class="px-6 py-3">
+            {{ o.cliente.nome if o.cliente else '-' }}
+          </td>
+          <td class="px-6 py-3 text-gray-700">
+            {{ o.descricao }}
+          </td>
+          <td class="px-6 py-3 font-medium">
+            R$ {{ '%.2f'|format(o.valor_total or 0) }}
+          </td>
+
+          <!-- Status -->
+          <td class="px-6 py-3">
+            {% if o.status.value == 'Aberto' %}
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                Aberto
+              </span>
+            {% elif o.status.value == 'Fechado' %}
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                Fechado
+              </span>
+            {% else %}
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                Cancelado
+              </span>
+            {% endif %}
+          </td>
+
+          <td class="px-6 py-3 text-gray-600">
+            {{ o.criado_em.strftime('%d/%m/%Y %H:%M') if o.criado_em else '-' }}
+          </td>
+
+          <!-- Ações -->
+          <td class="px-6 py-3">
+            <form method="post" action="/orcamentos/{{ o.id }}/status">
+              <input type="hidden" name="status" value="Fechado">
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-green-500 text-white hover:bg-green-600 transition disabled:opacity-40"
+                {% if o.status.value != 'Aberto' %}disabled{% endif %}
+                title="Fechar orçamento"
+              >
+                <i class="bi bi-check-lg"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+
+        {% else %}
+        <tr>
+          <td colspan="7" class="px-6 py-6 text-center text-gray-400">
+            Nenhum orçamento encontrado.
+          </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}

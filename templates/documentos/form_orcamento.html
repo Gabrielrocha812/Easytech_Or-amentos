@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerar Orçamento</title>
+
+  <style>
+    :root {
+      --primary: #5e35b1;
+      --primary-dark: #4527a0;
+      --danger: #d32f2f;
+      --gray: #777;
+      --border: #ddd;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      color: #333;
+      margin: 0;
+      padding: 30px;
+      max-width: 900px;
+      margin-inline: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 25px;
+    }
+
+    h3 {
+      margin-top: 25px;
+      color: var(--primary-dark);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+      font-size: 0.95em;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 18px;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--gray);
+    }
+
+    .btn-secondary:hover {
+      background: #555;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .btn-danger:hover {
+      background: #b71c1c;
+    }
+
+    /* ---------- TABELA DE ITENS ---------- */
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f5f5f5;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      font-size: 0.9em;
+    }
+
+    td input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    td:last-child {
+      text-align: center;
+      width: 80px;
+    }
+
+    /* ---------- MOBILE ---------- */
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--border);
+        padding: 10px;
+        border-radius: 6px;
+      }
+
+      td {
+        border: none;
+        padding: 6px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Gerar Orçamento</h1>
+
+<form action="/gerar-pdf" method="post">
+
+  <label>Cliente</label>
+  <input type="text" name="cliente" required>
+
+  <label>Contato</label>
+  <input type="text" name="contato_cliente" required>
+
+  <label>Emissão</label>
+  <input type="text" name="emissao" id="emissao" required>
+
+  <label>Validade</label>
+  <input type="text" name="validade" id="validade" required>
+
+  <h3>Itens</h3>
+
+  <div class="table-wrapper">
+    <table id="itens-table">
+      <thead>
+        <tr>
+          <th>Produto / Serviço</th>
+          <th>Qtd</th>
+          <th>Valor Unitário (R$)</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <input type="text" name="produto" required>
+          </td>
+          <td>
+            <input type="number" name="quantidade" min="1" value="1" required>
+          </td>
+          <td>
+            <input type="number" name="valor_unitario" step="0.01" min="0" required>
+          </td>
+          <td>
+            <button type="button" class="btn-danger" onclick="removerLinha(this)">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="button" class="btn-secondary" onclick="adicionarLinha()">
+    + Adicionar Item
+  </button>
+
+  <label>Desconto (R$)</label>
+  <input type="number" name="desconto" step="0.01" value="0.00">
+
+  <button type="submit">Gerar PDF</button>
+
+</form>
+
+<script>
+  function formatDate(date) {
+    return date.toLocaleDateString("pt-BR");
+  }
+
+  window.onload = function () {
+    const hoje = new Date();
+    document.getElementById("emissao").value = formatDate(hoje);
+    const validade = new Date(hoje);
+    validade.setMonth(validade.getMonth() + 1);
+    document.getElementById("validade").value = formatDate(validade);
+  };
+
+  function adicionarLinha() {
+    const tbody = document.querySelector("#itens-table tbody");
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td><input type="text" name="produto" required></td>
+      <td><input type="number" name="quantidade" min="1" value="1" required></td>
+      <td><input type="number" name="valor_unitario" step="0.01" min="0" required></td>
+      <td>
+        <button type="button" class="btn-danger" onclick="removerLinha(this)">✕</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  }
+
+  function removerLinha(btn) {
+    const linhas = document.querySelectorAll("#itens-table tbody tr");
+    if (linhas.length > 1) {
+      btn.closest("tr").remove();
+    }
+  }
+</script>
+
+</body>
+</html>

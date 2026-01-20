@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- SALDO -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+
+  <div class="rounded-2xl shadow-sm bg-gradient-to-br from-easytech-primary to-easytech-dark text-white text-center">
+    <div class="p-6">
+      <i class="bi bi-wallet2 text-3xl mb-2 block"></i>
+      <h6 class="text-sm font-medium opacity-90 mb-1">Saldo Atual</h6>
+      <h2 class="text-3xl font-bold">
+        R$ {{ '%.2f'|format(saldo or 0) }}
+      </h2>
+    </div>
+  </div>
+
+</div>
+
+<!-- ENTRADAS + SAÍDAS -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+  <!-- ENTRADAS -->
+  <div class="lg:col-span-7">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+      <!-- Header -->
+      <div class="flex items-center px-6 py-4 border-b">
+        <i class="bi bi-arrow-down-circle text-green-600 text-lg mr-2"></i>
+        <h2 class="font-semibold text-gray-700">Entradas</h2>
+      </div>
+
+      <!-- Tabela -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-purple-50 text-gray-700">
+            <tr>
+              <th class="px-6 py-3 text-left font-semibold">Data</th>
+              <th class="px-6 py-3 text-left font-semibold">Descrição</th>
+              <th class="px-6 py-3 text-left font-semibold">Valor</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y">
+
+            {% for t in entradas %}
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-6 py-3 text-gray-600">
+                {{ t.data.strftime('%d/%m/%Y %H:%M') if t.data else '-' }}
+              </td>
+              <td class="px-6 py-3 text-gray-800">
+                {{ t.descricao }}
+              </td>
+              <td class="px-6 py-3 font-semibold text-green-600">
+                R$ {{ '%.2f'|format(t.valor or 0) }}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" class="px-6 py-6 text-center text-gray-400">
+                Nenhuma entrada registrada.
+              </td>
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SAÍDA -->
+  <div class="lg:col-span-5">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+
+      <!-- Header -->
+      <div class="flex items-center px-6 py-4 border-b">
+        <i class="bi bi-arrow-up-circle text-red-600 text-lg mr-2"></i>
+        <h2 class="font-semibold text-gray-700">Registrar Saída</h2>
+      </div>
+
+      <!-- Form -->
+      <div class="p-6">
+        <form method="post" action="/financeiro/saida/nova" class="space-y-5">
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Descrição <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="descricao"
+              placeholder="Ex: Compra de peça"
+              required
+              class="w-full rounded-lg border-gray-300 focus:border-easytech-primary focus:ring-easytech-primary"
+            >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Valor (R$) <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              name="valor"
+              placeholder="0,00"
+              required
+              class="w-full rounded-lg border-gray-300 focus:border-easytech-primary focus:ring-easytech-primary"
+            >
+          </div>
+
+          <div class="flex justify-end pt-2">
+            <button
+              type="submit"
+              class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition"
+            >
+              <i class="bi bi-save"></i>
+              Salvar Saída
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
