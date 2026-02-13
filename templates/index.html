@@ -18,14 +18,12 @@
             sans: ["Manrope", "ui-sans-serif", "system-ui", "sans-serif"]
           },
           colors: {
-            night: "#020617",
-            card: "#0f172a",
-            mist: "#cbd5e1",
-            accent: "#0d9488"
+            easyPurple: "#5e35b1",
+            easyWhite: "#ffffff"
           },
           boxShadow: {
-            frame: "0 24px 70px rgba(2, 6, 23, 0.45)",
-            glow: "0 0 0 1px rgba(255,255,255,0.08), 0 16px 42px rgba(13, 148, 136, 0.18)"
+            frame: "0 24px 70px rgba(94, 53, 177, 0.18)",
+            glow: "0 0 0 1px rgba(94,53,177,0.10), 0 16px 42px rgba(94, 53, 177, 0.16)"
           }
         }
       }
@@ -35,9 +33,9 @@
   <style>
     body {
       background:
-        radial-gradient(circle at 10% -10%, rgba(20, 184, 166, 0.18), transparent 45%),
-        radial-gradient(circle at 90% 15%, rgba(56, 189, 248, 0.14), transparent 38%),
-        linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
+        radial-gradient(circle at 10% -10%, rgba(94, 53, 177, 0.20), transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(94, 53, 177, 0.14), transparent 38%),
+        linear-gradient(145deg, #ffffff 0%, #ffffff 100%);
     }
 
     iframe {
@@ -46,7 +44,7 @@
     }
 
     .glass {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.88));
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
@@ -98,20 +96,20 @@
     }
   </style>
 </head>
-<body class="font-sans text-slate-100 antialiased">
+<body class="font-sans text-easyPurple antialiased">
   <div class="pointer-events-none fixed inset-0 overflow-hidden">
-    <div class="animate-float absolute -left-12 top-20 h-56 w-56 rounded-full bg-emerald-400/20 blur-3xl"></div>
-    <div class="animate-float absolute right-0 top-1/3 h-64 w-64 rounded-full bg-sky-400/20 blur-3xl" style="animation-delay: 1.3s;"></div>
-    <div class="animate-float absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-300/10 blur-3xl" style="animation-delay: 2.2s;"></div>
+    <div class="animate-float absolute -left-12 top-20 h-56 w-56 rounded-full bg-[rgba(94,53,177,0.22)] blur-3xl"></div>
+    <div class="animate-float absolute right-0 top-1/3 h-64 w-64 rounded-full bg-[rgba(94,53,177,0.18)] blur-3xl" style="animation-delay: 1.3s;"></div>
+    <div class="animate-float absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[rgba(94,53,177,0.10)] blur-3xl" style="animation-delay: 2.2s;"></div>
   </div>
 
   <div class="relative mx-auto flex min-h-screen max-w-[1520px] flex-col gap-4 p-4 sm:p-6 lg:flex-row lg:gap-6 lg:p-8">
-    <aside class="animate-rise glass w-full shrink-0 rounded-3xl border border-white/10 p-4 shadow-frame lg:w-80 lg:p-6">
+    <aside class="animate-rise glass w-full shrink-0 rounded-3xl border border-[rgba(94,53,177,0.18)] p-4 shadow-frame lg:w-80 lg:p-6">
       <div class="mb-8 flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/15 text-sm font-bold text-emerald-300">ET</div>
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-easyPurple text-sm font-bold text-white">ET</div>
         <div>
-          <p class="text-[10px] uppercase tracking-[0.24em] text-slate-400">Easytech</p>
-          <p class="text-sm font-semibold text-white">Document Center</p>
+          <p class="text-[10px] uppercase tracking-[0.24em] text-[rgba(94,53,177,0.70)]">Easytech</p>
+          <p class="text-sm font-semibold text-easyPurple">Document Center</p>
         </div>
       </div>
 
@@ -124,7 +122,7 @@
           class="doc-link flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition"
         >
           <span>Orcamento</span>
-          <span class="text-xs text-slate-400">01</span>
+          <span class="text-xs text-[rgba(94,53,177,0.72)]">01</span>
         </a>
 
         <a
@@ -135,7 +133,7 @@
           class="doc-link flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition"
         >
           <span>Nota de Recebimento</span>
-          <span class="text-xs text-slate-400">02</span>
+          <span class="text-xs text-[rgba(94,53,177,0.72)]">02</span>
         </a>
 
         <a
@@ -146,33 +144,33 @@
           class="doc-link flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition"
         >
           <span>Ordem de Servico</span>
-          <span class="text-xs text-slate-400">03</span>
+          <span class="text-xs text-[rgba(94,53,177,0.72)]">03</span>
         </a>
       </nav>
 
-      <div class="mt-8 rounded-2xl border border-white/10 bg-slate-950/50 p-4 text-xs text-slate-300">
+      <div class="mt-8 rounded-2xl border border-[rgba(94,53,177,0.20)] bg-white p-4 text-xs text-[rgba(94,53,177,0.88)]">
         Fluxo rapido, interface limpa e geracao de PDF pronta para operacao diaria.
       </div>
 
-      <div class="mt-8 hidden border-t border-white/10 pt-4 text-xs text-slate-400 lg:block">
-        <p>© <span id="ano"></span> Easytech Tecnologia</p>
+      <div class="mt-8 hidden border-t border-[rgba(94,53,177,0.18)] pt-4 text-xs text-[rgba(94,53,177,0.78)] lg:block">
+        <p>&copy; <span id="ano"></span> Easytech Tecnologia</p>
         <p class="mt-1">Solucoes inteligentes</p>
       </div>
     </aside>
 
     <section class="flex min-h-[72vh] flex-1 flex-col gap-4">
-      <header class="animate-rise-delay glass rounded-3xl border border-white/10 px-6 py-6 shadow-glow">
+      <header class="animate-rise-delay glass rounded-3xl border border-[rgba(94,53,177,0.16)] px-6 py-6 shadow-glow">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p class="text-[11px] uppercase tracking-[0.26em] text-emerald-300/80">Painel de Documentos</p>
-            <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Layout premium para operacao diaria</h1>
-            <p class="mt-2 max-w-2xl text-sm text-slate-300">Acesse formularios de orcamento, nota e ordem de servico em um fluxo unico e direto.</p>
+            <p class="text-[11px] uppercase tracking-[0.26em] text-[rgba(94,53,177,0.76)]">Painel de Documentos</p>
+            <h1 class="mt-2 text-2xl font-semibold tracking-tight text-easyPurple sm:text-3xl">Layout premium para operacao diaria</h1>
+            <p class="mt-2 max-w-2xl text-sm text-[rgba(94,53,177,0.86)]">Acesse formularios de orcamento, nota e ordem de servico em um fluxo unico e direto.</p>
           </div>
-          <span class="inline-flex items-center rounded-full border border-emerald-300/40 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200">UI minimalista</span>
+          <span class="inline-flex items-center rounded-full border border-[rgba(94,53,177,0.28)] bg-white px-3 py-1 text-xs font-medium text-easyPurple">UI minimalista</span>
         </div>
       </header>
 
-      <main class="animate-rise-slow flex-1 overflow-hidden rounded-3xl border border-white/10 bg-white shadow-frame">
+      <main class="animate-rise-slow flex-1 overflow-hidden rounded-3xl border border-[rgba(94,53,177,0.16)] bg-white shadow-frame">
         <iframe
           name="conteudo"
           src="/orcamento"
@@ -184,7 +182,7 @@
     </section>
   </div>
 
-  <nav class="glass fixed inset-x-4 bottom-4 z-50 rounded-2xl border border-white/10 p-2 shadow-frame lg:hidden" aria-label="Navegacao mobile">
+  <nav class="glass fixed inset-x-4 bottom-4 z-50 rounded-2xl border border-[rgba(94,53,177,0.18)] p-2 shadow-frame lg:hidden" aria-label="Navegacao mobile">
     <div class="grid grid-cols-3 gap-2 text-center text-xs">
       <a href="/orcamento" target="conteudo" data-doc="orcamento" onclick="setActive('orcamento')" class="doc-link rounded-xl px-2 py-2 font-medium transition">Orcamento</a>
       <a href="/nota-recebimento" target="conteudo" data-doc="nota" onclick="setActive('nota')" class="doc-link rounded-xl px-2 py-2 font-medium transition">Nota</a>
@@ -193,8 +191,8 @@
   </nav>
 
   <script>
-    const activeClasses = ["bg-white", "text-slate-900", "shadow-lg", "shadow-slate-900/10"];
-    const inactiveClasses = ["text-slate-300", "hover:bg-white/10", "hover:text-white"];
+    const activeClasses = ["bg-easyPurple", "text-white", "shadow-lg"];
+    const inactiveClasses = ["text-easyPurple", "hover:bg-[rgba(94,53,177,0.10)]", "hover:text-easyPurple"];
 
     function setActive(docId) {
       document.querySelectorAll("[data-doc]").forEach((link) => {
