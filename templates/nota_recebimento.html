@@ -1,209 +1,388 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nota de Recebimento - {{ cliente }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+
     <style>
-        @page { size: A4; margin: 0; }
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 11pt;
-            color: #333;
-            margin: 1.8cm;
-            position: relative;
+            margin: 0;
+            color: #0f172a;
+            background: #e2e8f0;
+            font-family: "Manrope", "Segoe UI", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Cabeçalho --- */
-        .header {
-            background: linear-gradient(90deg, #673ab7, #512da8);
-            color: #fff;
-            padding: 25px 30px;
+        .document-shell {
+            width: 18.6cm;
+            min-height: 27.2cm;
+            margin: 1.05cm auto 2.85cm;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 42%, #0f766e 100%);
+        }
+
+        .doc-header {
+            padding: 34px 40px;
+            color: #ffffff;
+        }
+
+        .header-main {
             display: flex;
+            align-items: flex-start;
             justify-content: space-between;
-            align-items: center;
-            border-radius: 8px;
+            gap: 24px;
         }
-        .logo { width: 200px; height: auto; }
-        .details { text-align: right; }
-        .details h1 { font-size: 22pt; margin: 0; font-weight: 600; }
-        .details p { margin: 3px 0; font-size: 10pt; color: #eee; }
 
-        /* --- Informações Cliente e Equipamento --- */
-        .info {
-            margin-top: 40px;
+        .logo {
+            height: 56px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-copy {
+            text-align: right;
+        }
+
+        .header-copy .overline {
+            margin: 0;
+            color: #a7f3d0;
+            font-size: 11px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+
+        .header-copy h1 {
+            margin: 8px 0 10px;
+            font-size: 32px;
+            line-height: 1.1;
+            font-weight: 700;
+        }
+
+        .header-copy .meta {
+            margin: 4px 0;
+            color: #dbeafe;
+            font-size: 13px;
+        }
+
+        .doc-main {
+            padding: 30px 40px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 20px;
         }
-        .info div { width: 48%; }
-        .info h2 {
-            font-size: 10pt;
-            color: #555;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-        }
-        .info p { line-height: 1.6; font-size: 9pt; }
 
-        /* --- Detalhes do Equipamento --- */
-        .equipamento {
-            margin-top: 40px;
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
         }
-        .equipamento h3 {
-            color: #512da8;
-            font-size: 11pt;
-            margin-bottom: 10px;
+
+        .info-card {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
         }
-        .equipamento table {
+
+        .label {
+            margin: 0;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+
+        .info-card p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .info-card .strong {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .data-panel {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            color: #0f172a;
+        }
+
+        .data-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .equipamento th, .equipamento td {
-            padding: 10px;
-            border-bottom: 1px solid #f2f2f2;
-            font-size: 9.5pt;
-        }
-        .equipamento th {
-            background-color: #f3f1fa;
-            color: #4a148c;
+
+        .data-table th,
+        .data-table td {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 11px 16px;
+            font-size: 13px;
             text-align: left;
+            vertical-align: top;
         }
 
-        /* --- Observações --- */
+        .data-table tr:last-child th,
+        .data-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .data-table th {
+            width: 35%;
+            color: #475569;
+            font-weight: 600;
+            background: #f8fafc;
+        }
+
         .observacoes {
-            margin-top: 30px;
-        }
-        .observacoes h3 {
-            color: #512da8;
-            font-size: 11pt;
-            margin-bottom: 6px;
-        }
-        .observacoes p {
-            font-size: 9pt;
-            line-height: 1.6;
-            border: 1px solid #eee;
-            padding: 10px;
-            border-radius: 6px;
-            min-height: 60px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
         }
 
-        /* --- Assinatura --- */
-        .assinatura {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
+        .observacoes .content {
+            margin-top: 10px;
+            min-height: 80px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.65;
+            white-space: pre-wrap;
+        }
+
+        .sign-grid {
+            padding-top: 22px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             text-align: center;
         }
-        .assinatura div {
-            width: 45%;
-        }
-        .assinatura p {
-            margin-top: 60px;
-            border-top: 1px solid #555;
-            padding-top: 5px;
-            font-size: 9pt;
-            color: #444;
+
+        .sign-line {
+            margin: 0 auto;
+            width: 78%;
+            border-top: 1px solid #94a3b8;
+            padding-top: 10px;
+            font-size: 13px;
+            color: #475569;
         }
 
-        /* --- Rodapé --- */
-        .footer {
+        .footer-shell {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            font-size: 9pt;
-            color: #777;
-            padding: 0.8cm 1.8cm;
-            border-top: 1px solid #e0e0e0;
-            background-color: #fafafa;
+            border-top: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.98);
+        }
 
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
+        .footer-inner {
+            max-width: 19cm;
+            margin: 0 auto;
+            padding: 10px 40px;
+            display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 11px;
+            color: #64748b;
         }
 
-        .footer .info {
-            grid-column: 2;
-            text-align: center;
-            line-height: 1.4;
+        .footer-inner p {
+            margin: 0;
+            line-height: 1.5;
         }
 
-        .footer .qr {
-            grid-column: 3;
+        .footer-qr {
             text-align: right;
+            flex-shrink: 0;
         }
-        .footer .qr img {
-            width: 55px;
-            height: 55px;
+
+        .footer-qr img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
             display: block;
             margin-left: auto;
         }
-        .footer .qr p {
-            font-size: 8pt;
-            color: #777;
-            margin-top: 5px;
-            text-align: right;
+
+        .footer-qr span {
+            display: block;
+            margin-top: 4px;
+            font-size: 11px;
         }
 
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.65s ease-out both;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+            }
+
+            .document-shell {
+                width: 100%;
+                min-height: 100%;
+                margin: 0 auto;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .animate-slide-up {
+                animation: none;
+            }
+        }
+
+        @media (max-width: 920px) {
+            .document-shell {
+                width: 100%;
+                margin: 0 0 2.85cm;
+                border-radius: 0;
+            }
+
+            .info-grid,
+            .sign-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-header,
+            .doc-main {
+                padding-left: 22px;
+                padding-right: 22px;
+            }
+
+            .footer-inner {
+                padding-left: 22px;
+                padding-right: 22px;
+            }
+        }
     </style>
 </head>
-<body>
+<body class="font-sans antialiased text-slate-800">
+    <article class="document-shell animate-slide-up">
+        <header class="doc-header header-gradient">
+            <div class="header-main">
+                <img src="{{ logo_path }}" class="logo" alt="Easytech Tecnologia">
+                <div class="header-copy">
+                    <p class="overline">Easytech Tecnologia</p>
+                    <h1>Nota de Recebimento</h1>
+                    <p class="meta">Data: {{ data_recebimento }}</p>
+                    <p class="meta">Responsavel: {{ responsavel }}</p>
+                </div>
+            </div>
+        </header>
 
-    <div class="header">
-        <img src="{{ logo_path }}" class="logo" alt="Easytech Tecnologia">
-        <div class="details">
-            <h1>Nota de Recebimento</h1>
-            <p><b>Data:</b> {{ data_recebimento }}</p>
-            <p><b>Responsável:</b> {{ responsavel }}</p>
-        </div>
-    </div>
+        <main class="doc-main">
+            <section class="info-grid">
+                <article class="info-card rounded-2xl">
+                    <p class="label">Cliente</p>
+                    <p class="strong">{{ cliente }}</p>
+                    <p>{{ contato_cliente }}</p>
+                    <p>CPF/CNPJ: {{ cpf_cnpj or '-' }}</p>
+                    <p>Telefone: {{ telefone or '-' }}</p>
+                </article>
 
-    <div class="info">
-        <div>
-            <h2>CLIENTE</h2>
+                <article class="info-card rounded-2xl">
+                    <p class="label">Registro</p>
+                    <p>Numero: <strong>{{ numero_registro }}</strong></p>
+                    <p>Recebimento: <strong>{{ data_recebimento }}</strong></p>
+                    <p>Atendente: <strong>{{ responsavel }}</strong></p>
+                </article>
+            </section>
+
+            <section class="data-panel rounded-2xl">
+                <h2 class="panel-title">Detalhes do Equipamento</h2>
+                <table class="data-table">
+                    <tbody>
+                        <tr>
+                            <th>Tipo</th>
+                            <td>{{ tipo_equipamento }}</td>
+                        </tr>
+                        <tr>
+                            <th>Marca / Modelo</th>
+                            <td>{{ marca_modelo }}</td>
+                        </tr>
+                        <tr>
+                            <th>Numero de Serie</th>
+                            <td>{{ numero_serie or '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Acessorios Recebidos</th>
+                            <td>{{ acessorios or '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Condicao Geral</th>
+                            <td>{{ condicao or '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="observacoes rounded-2xl">
+                <p class="label">Observacoes</p>
+                <p class="content">{{ observacoes or '-' }}</p>
+            </section>
+
+            <section class="sign-grid">
+                <p class="sign-line">Assinatura do Cliente</p>
+                <p class="sign-line">Assinatura Easytech</p>
+            </section>
+        </main>
+    </article>
+
+    <footer class="footer-shell">
+        <div class="footer-inner">
             <p>
-                <b>{{ cliente }}</b><br>
-                {{ contato_cliente }}<br>
-                CPF/CNPJ: {{ cpf_cnpj }}<br>
-                Telefone: {{ telefone }}
+                EASYTECH TECNOLOGIA | Rua Marechal Deodoro, 64 - Nova Lima/MG<br>
+                CNPJ 62.839.208/0001-56
             </p>
+            <div class="footer-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://easytechnl.com.br&size=60x60" alt="QR Code Easytech">
+                <span>easytechnl.com.br</span>
+            </div>
         </div>
-        <div>
-            <h2>RECEBIMENTO</h2>
-            <p>
-                Data: {{ data_recebimento }}<br>
-                Recebido por: {{ responsavel }}<br>
-                Nº de Registro: {{ numero_registro }}
-            </p>
-        </div>
-    </div>
-
-    <div class="equipamento">
-        <h3>Equipamento Recebido</h3>
-        <table>
-            <tr><th>Tipo</th><td>{{ tipo_equipamento }}</td></tr>
-            <tr><th>Marca / Modelo</th><td>{{ marca_modelo }}</td></tr>
-            <tr><th>Número de Série</th><td>{{ numero_serie }}</td></tr>
-            <tr><th>Acessórios Recebidos</th><td>{{ acessorios }}</td></tr>
-            <tr><th>Condição do Equipamento</th><td>{{ condicao }}</td></tr>
-        </table>
-    </div>
-
-    <div class="observacoes">
-        <h3>Observações</h3>
-        <p>{{ observacoes }}</p>
-    </div>
-
-
-    <div class="footer">
-        <div class="info">
-            EASYTECH TECNOLOGIA – Soluções Inteligentes para sua Empresa<br>
-            Rua Marechal Deodoro, 64 – Nova Lima/MG | CNPJ 62.839.208/0001-56
-        </div>
-        <div class="qr">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://easytechnl.com.br&size=60x60" alt="QR Code Easytech">
-            <p>Nosso site</p>
-        </div>
-    </div>
-
+    </footer>
 </body>
 </html>
